@@ -36,7 +36,8 @@ const char* simpleFragmentShader = R"(
 
 	void main()
 	{
-		fragColor = vec4(1.0 - fs_in.color, 1.0);
+		vec3 color = 1.0 - fs_in.color;
+		fragColor = vec4(color, 1.0);
 	}
 )";
 
@@ -139,6 +140,7 @@ int main(void)
 	if (simpleShader == 0)
 	{
 		glfwTerminate();
+		std::cin.get();
 		return 1;
 	}
 
@@ -178,7 +180,7 @@ int main(void)
 		timer -= deltaTime;
 		if (timer <= 0)
 		{
-			std::cout << "FPS: " << fps << " / " << (1.0 / deltaTime) << std::endl;
+			std::cout << "FPS: " << fps << std::endl;
 			timer += 1.0;
 			fps = 0;
 		}
