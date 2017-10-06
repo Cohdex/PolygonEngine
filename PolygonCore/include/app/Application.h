@@ -5,7 +5,10 @@
 class Application
 {
 private:
-	GLFWwindow* window;
+	GLFWwindow* m_window;
+	bool m_running = false;
+
+	void appLoop();
 
 protected:
 	Application(const std::string& title, int width, int height);
