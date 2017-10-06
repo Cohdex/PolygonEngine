@@ -168,7 +168,7 @@ int main(void)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	double lastTime = glfwGetTime();
-	double timer = 1.0;
+	double timePassed = 0.0;
 	unsigned int fps = 0;
 	while (!glfwWindowShouldClose(window))
 	{
@@ -177,11 +177,11 @@ int main(void)
 		lastTime = time;
 
 		fps++;
-		timer -= deltaTime;
-		if (timer <= 0)
+		timePassed += deltaTime;
+		if (timePassed >= 1.0)
 		{
-			std::cout << "FPS: " << fps << std::endl;
-			timer += 1.0;
+			std::cout << "FPS: " << fps << " | frame time: " << (deltaTime * 1000.0) << "ms" << std::endl;
+			timePassed -= (int) timePassed;
 			fps = 0;
 		}
 
