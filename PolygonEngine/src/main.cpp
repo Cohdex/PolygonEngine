@@ -9,6 +9,9 @@
 #include <iostream>
 #include <vector>
 
+#include <cstdlib>
+#include <ctime>
+
 const char* simpleVertexShader = R"(
 	#version 450 core
 	#line 9
@@ -21,9 +24,18 @@ const char* simpleVertexShader = R"(
 		vec3 color;
 	} vs_out;
 
+	uniform float t;
+
 	void main()
 	{
-		gl_Position = vec4(in_position, 1.0);
+		float c = cos(t);
+		float s = sin(t);
+		mat3 m = mat3(
+			 c,  s,  0,
+			-s,  c,  0,
+			 0,  0,  1
+		);
+		gl_Position = vec4(m * in_position, 1.0);
 		vs_out.color = in_color;
 	}
 )";
@@ -185,12 +197,17 @@ int main(void)
 	float r = 244.0f / 255.0f;
 	float g = 73.0f / 255.0f;
 	float b = 196.0f / 255.0f;
-	for (int i = 0; i < 64; i++)
+	std::srand(std::time(nullptr));
+	constexpr int segments = 256;
+	for (int i = 0; i < segments; i++)
 	{
-		GLfloat x0 = (GLfloat)std::cos((double)i / 64 * M_PI * 2) * 0.5f;
-		GLfloat y0 = (GLfloat)std::sin((double)i / 64 * M_PI * 2) * 0.5f;
-		GLfloat x1 = (GLfloat)std::cos((double)(i + 1) / 64 * M_PI * 2) * 0.5f;
-		GLfloat y1 = (GLfloat)std::sin((double)(i + 1) / 64 * M_PI * 2) * 0.5f;
+		r = (std::rand() % 256) / 255.0f;
+		g = (std::rand() % 256) / 255.0f;
+		b = (std::rand() % 256) / 255.0f;
+		GLfloat x0 = (GLfloat)std::cos((double)i / segments * M_PI * 2) * 0.7f;
+		GLfloat y0 = (GLfloat)std::sin((double)i / segments * M_PI * 2) * 0.7f;
+		GLfloat x1 = (GLfloat)std::cos((double)(i + 1) / segments * M_PI * 2) * 0.7f;
+		GLfloat y1 = (GLfloat)std::sin((double)(i + 1) / segments * M_PI * 2) * 0.7f;
 		vertices.push_back(x0);
 		vertices.push_back(y0);
 		vertices.push_back(r);
@@ -205,9 +222,9 @@ int main(void)
 
 		vertices.push_back(0.0f);
 		vertices.push_back(0.0f);
-		vertices.push_back(r);
-		vertices.push_back(g);
-		vertices.push_back(b);
+		vertices.push_back(1.0f);
+		vertices.push_back(1.0f);
+		vertices.push_back(1.0f);
 	}
 
 	GLuint vbo;
@@ -226,6 +243,9 @@ int main(void)
 	}
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	double rotation = 0;
+	double speed = 0;
 
 	double timePassed = 0.0;
 	unsigned int fps = 0;
@@ -247,10 +267,14 @@ int main(void)
 
 		glfwPollEvents();
 
+		speed += (std::rand() % 3) - 1;
+		rotation += /*speed */ deltaTime;
+
 		glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 		glUseProgram(simpleShader);
+		glUniform1f(glGetUniformLocation(simpleShader, "t"), (float)rotation*0);
 		glBindVertexArray(vao);
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 		glBindVertexArray(0);
