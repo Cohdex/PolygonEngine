@@ -1,5 +1,10 @@
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+#include <polygon/app/Application.h>
 
 #include <iostream>
 #include <vector>
@@ -36,7 +41,7 @@ const char* simpleFragmentShader = R"(
 
 	void main()
 	{
-		vec3 color = 1.0 - fs_in.color;
+		vec3 color = fs_in.color;
 		fragColor = vec4(color, 1.0);
 	}
 )";
@@ -96,8 +101,34 @@ GLuint createShader(const char* vertexSource, const char* fragmentSource)
 	return program;
 }
 
+class DemoApp : public plgn::Application
+{
+public:
+	DemoApp() : Application("Demo Application", 1920, 1080)
+	{
+	}
+
+	void init() override
+	{
+
+	}
+
+	void update(double deltaTime) override
+	{
+		std::cout << "update()" << std::endl;
+	}
+
+	void render() override
+	{
+		std::cout << "render()" << std::endl;
+	}
+};
+
 int main(void)
 {
+	//plgn::Application* app = new DemoApp();
+	//return 0;
+
 	if (!glfwInit())
 	{
 		std::cout << "Failed to initialize GLFW" << std::endl;
@@ -109,7 +140,7 @@ int main(void)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_SAMPLES, 4);
-	GLFWwindow* window = glfwCreateWindow(1920, 1080, "Polygon Engine", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(1080, 1080, "Polygon Engine", nullptr, nullptr);
 	if (!window)
 	{
 		glfwTerminate();
@@ -144,11 +175,40 @@ int main(void)
 		return 1;
 	}
 
-	GLfloat vertices[]{
-		+0.0f, +0.5f, 1.0f, 0.0f, 0.0f,
-		-0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-		+0.5f, -0.5f, 0.0f, 0.0f, 1.0f
-	};
+	//GL*float vertices[]{
+	//	+0.0f, +0.5f, 1.0f, 0.0f, 0.0f,
+	//	-0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+	//	+0.5f, -0.5f, 0.0f, 0.0f, 1.0f
+	//};
+
+	std::vector<GLfloat> vertices;
+	float r = 244.0f / 255.0f;
+	float g = 73.0f / 255.0f;
+	float b = 196.0f / 255.0f;
+	for (int i = 0; i < 64; i++)
+	{
+		GLfloat x0 = (GLfloat)std::cos((double)i / 64 * M_PI * 2) * 0.5f;
+		GLfloat y0 = (GLfloat)std::sin((double)i / 64 * M_PI * 2) * 0.5f;
+		GLfloat x1 = (GLfloat)std::cos((double)(i + 1) / 64 * M_PI * 2) * 0.5f;
+		GLfloat y1 = (GLfloat)std::sin((double)(i + 1) / 64 * M_PI * 2) * 0.5f;
+		vertices.push_back(x0);
+		vertices.push_back(y0);
+		vertices.push_back(r);
+		vertices.push_back(g);
+		vertices.push_back(b);
+
+		vertices.push_back(x1);
+		vertices.push_back(y1);
+		vertices.push_back(r);
+		vertices.push_back(g);
+		vertices.push_back(b);
+
+		vertices.push_back(0.0f);
+		vertices.push_back(0.0f);
+		vertices.push_back(r);
+		vertices.push_back(g);
+		vertices.push_back(b);
+	}
 
 	GLuint vbo;
 	glGenBuffers(1, &vbo);
@@ -157,7 +217,7 @@ int main(void)
 	glBindVertexArray(vao);
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
 
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
@@ -167,9 +227,9 @@ int main(void)
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	double lastTime = glfwGetTime();
 	double timePassed = 0.0;
 	unsigned int fps = 0;
+	double lastTime = glfwGetTime();
 	while (!glfwWindowShouldClose(window))
 	{
 		const double time = glfwGetTime();
@@ -192,7 +252,7 @@ int main(void)
 
 		glUseProgram(simpleShader);
 		glBindVertexArray(vao);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 		glBindVertexArray(0);
 		glUseProgram(0);
 

@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PolygonEngine", "PolygonEngine\PolygonEngine.vcxproj", "{C6852CFB-967D-4BBC-A276-66F39032EA8C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E8BD1CE5-5A4D-4A5D-BC74-A522083D499D} = {E8BD1CE5-5A4D-4A5D-BC74-A522083D499D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PolygonCore", "PolygonCore\PolygonCore.vcxproj", "{E8BD1CE5-5A4D-4A5D-BC74-A522083D499D}"
 EndProject
