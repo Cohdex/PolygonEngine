@@ -7,9 +7,13 @@ namespace plgn
 	class Application
 	{
 	private:
+		std::string m_title;
+		int m_width;
+		int m_height;
 		GLFWwindow* m_window;
 		bool m_running = false;
 
+		void createWindow();
 		void appLoop();
 
 	protected:
@@ -21,9 +25,9 @@ namespace plgn
 
 	public:
 		Application(const Application&) = delete;
-		Application(const Application&&) = delete;
 		Application& operator=(const Application&) = delete;
 
+		void start();
 		void stop();
 	};
 }

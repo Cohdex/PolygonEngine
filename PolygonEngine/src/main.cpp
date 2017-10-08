@@ -14,7 +14,7 @@
 
 const char* simpleVertexShader = R"(
 	#version 450 core
-	#line 9
+	#line 18
 
 	layout(location = 0) in vec3 in_position;
 	layout(location = 1) in vec3 in_color;
@@ -53,7 +53,7 @@ const char* simpleFragmentShader = R"(
 
 	void main()
 	{
-		vec3 color = fs_in.color;
+		vec3 color = sqrt(fs_in.color);
 		fragColor = vec4(color, 1.0);
 	}
 )";
@@ -120,9 +120,10 @@ public:
 	{
 	}
 
+private:
 	void init() override
 	{
-
+		std::cout << "init()" << std::endl;
 	}
 
 	void update(double deltaTime) override
@@ -138,8 +139,9 @@ public:
 
 int main(void)
 {
-	//plgn::Application* app = new DemoApp();
-	//return 0;
+	plgn::Application* app = new DemoApp();
+	app->start();
+	return 0;
 
 	if (!glfwInit())
 	{
@@ -177,6 +179,11 @@ int main(void)
 	glViewport(0, 0, screenWidth, screenHeight);
 	glEnable(GL_MULTISAMPLE);
 
+	auto windowResizeCallback = [](GLFWwindow* window, int newWidth, int newHeight) {
+		glViewport(0, 0, newWidth, newHeight);
+	};
+	glfwSetWindowSizeCallback(window, windowResizeCallback);
+
 	std::cout << "OpenGL: " << glGetString(GL_VERSION) << std::endl;
 
 	GLuint simpleShader = createShader(simpleVertexShader, simpleFragmentShader);
@@ -187,27 +194,22 @@ int main(void)
 		return 1;
 	}
 
-	//GL*float vertices[]{
-	//	+0.0f, +0.5f, 1.0f, 0.0f, 0.0f,
-	//	-0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-	//	+0.5f, -0.5f, 0.0f, 0.0f, 1.0f
-	//};
-
 	std::vector<GLfloat> vertices;
 	float r = 244.0f / 255.0f;
 	float g = 73.0f / 255.0f;
 	float b = 196.0f / 255.0f;
-	std::srand(std::time(nullptr));
+	std::srand((unsigned int)std::time(nullptr));
 	constexpr int segments = 256;
 	for (int i = 0; i < segments; i++)
 	{
-		r = (std::rand() % 256) / 255.0f;
-		g = (std::rand() % 256) / 255.0f;
-		b = (std::rand() % 256) / 255.0f;
+		//r = (std::rand() % 256) / 255.0f;
+		//g = (std::rand() % 256) / 255.0f;
+		//b = (std::rand() % 256) / 255.0f;
 		GLfloat x0 = (GLfloat)std::cos((double)i / segments * M_PI * 2) * 0.7f;
 		GLfloat y0 = (GLfloat)std::sin((double)i / segments * M_PI * 2) * 0.7f;
 		GLfloat x1 = (GLfloat)std::cos((double)(i + 1) / segments * M_PI * 2) * 0.7f;
 		GLfloat y1 = (GLfloat)std::sin((double)(i + 1) / segments * M_PI * 2) * 0.7f;
+
 		vertices.push_back(x0);
 		vertices.push_back(y0);
 		vertices.push_back(r);
