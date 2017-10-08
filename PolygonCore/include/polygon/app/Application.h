@@ -1,17 +1,21 @@
 #pragma once
 
 #include <string>
+#include <unordered_set>
 
 namespace plgn
 {
 	class Application
 	{
+		friend void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
 	private:
 		std::string m_title;
 		int m_width;
 		int m_height;
 		GLFWwindow* m_window;
 		bool m_running = false;
+		std::unordered_set<int> m_pressedKeys;
 
 		void createWindow();
 		void appLoop();
@@ -29,5 +33,8 @@ namespace plgn
 
 		void start();
 		void stop();
+
+		bool isKeyDown(int key);
+		bool wasKeyPressed(int key);
 	};
 }

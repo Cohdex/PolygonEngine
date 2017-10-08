@@ -43,6 +43,7 @@ namespace plgn
 			throw -1;
 		}
 
+		glfwSetWindowUserPointer(m_window, this);
 		glfwMakeContextCurrent(m_window);
 		glfwSwapInterval(0);
 
@@ -64,6 +65,8 @@ namespace plgn
 		};
 		glfwSetWindowSizeCallback(m_window, windowResizeCallback);
 
+		glfwSetKeyCallback(m_window, keyCallback);
+
 		std::cout << "OpenGL: " << glGetString(GL_VERSION) << std::endl;
 	}
 
@@ -77,6 +80,7 @@ namespace plgn
 			double deltaTime = time - lastTime;
 			lastTime = time;
 
+			m_pressedKeys.clear();
 			glfwPollEvents();
 
 			if (glfwWindowShouldClose(m_window))
@@ -97,5 +101,24 @@ namespace plgn
 		}
 
 		glfwTerminate();
+	}
+
+	void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+	{
+		Application* app = (Application*)glfwGetWindowUserPointer(window);
+		if (action == GLFW_PRESS)
+		{
+			app->m_pressedKeys.insert(key);
+		}
+	}
+
+	bool Application::isKeyDown(int key)
+	{
+		return glfwGetKey(m_window, key);
+	}
+
+	bool Application::wasKeyPressed(int key)
+	{
+		return m_pressedKeys.count(key) == 1;
 	}
 }

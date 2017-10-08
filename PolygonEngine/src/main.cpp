@@ -53,7 +53,7 @@ const char* simpleFragmentShader = R"(
 
 	void main()
 	{
-		vec3 color = sqrt(fs_in.color);
+		vec3 color = fs_in.color;
 		fragColor = vec4(color, 1.0);
 	}
 )";
@@ -115,6 +115,11 @@ GLuint createShader(const char* vertexSource, const char* fragmentSource)
 
 class DemoApp : public plgn::Application
 {
+private:
+	GLuint m_simpleShader;
+	GLuint m_vbo, m_vao;
+	int m_numVertices;
+
 public:
 	DemoApp() : Application("Demo Application", 1920, 1080)
 	{
@@ -123,17 +128,85 @@ public:
 private:
 	void init() override
 	{
-		std::cout << "init()" << std::endl;
+		m_simpleShader = createShader(simpleVertexShader, simpleFragmentShader);
+		if (m_simpleShader == 0)
+		{
+			glfwTerminate();
+			std::cin.get();
+			throw 1;
+		}
+
+		std::vector<GLfloat> vertices;
+		float r = 142 / 255.0f;
+		float g = 41 / 255.0f;
+		float b = 109 / 255.0f;
+		std::srand((unsigned int)std::time(nullptr));
+		constexpr int segments = 256;
+		for (int i = 0; i < segments; i++)
+		{
+			//r = (std::rand() % 256) / 255.0f;
+			//g = (std::rand() % 256) / 255.0f;
+			//b = (std::rand() % 256) / 255.0f;
+			GLfloat x0 = (GLfloat)std::cos((double)i / segments * M_PI * 2) * 0.8f;
+			GLfloat y0 = (GLfloat)std::sin((double)i / segments * M_PI * 2) * 0.8f;
+			GLfloat x1 = (GLfloat)std::cos((double)(i + 1) / segments * M_PI * 2) * 0.8f;
+			GLfloat y1 = (GLfloat)std::sin((double)(i + 1) / segments * M_PI * 2) * 0.8f;
+
+			vertices.push_back(x0);
+			vertices.push_back(y0);
+			vertices.push_back(r);
+			vertices.push_back(g);
+			vertices.push_back(b);
+
+			vertices.push_back(x1);
+			vertices.push_back(y1);
+			vertices.push_back(r);
+			vertices.push_back(g);
+			vertices.push_back(b);
+
+			vertices.push_back(0.0f);
+			vertices.push_back(0.0f);
+			vertices.push_back(1.2f);
+			vertices.push_back(1.2f);
+			vertices.push_back(1.2f);
+		}
+		m_numVertices = vertices.size();
+
+		glGenBuffers(1, &m_vbo);
+		glGenVertexArrays(1, &m_vao);
+		glBindVertexArray(m_vao);
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+
+			glEnableVertexAttribArray(0);
+			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
+			glEnableVertexAttribArray(1);
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
+		}
+		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
 	void update(double deltaTime) override
 	{
-		std::cout << "update()" << std::endl;
+		if (wasKeyPressed(GLFW_KEY_ESCAPE))
+		{
+			stop();
+		}
 	}
 
 	void render() override
 	{
-		std::cout << "render()" << std::endl;
+		glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+		glUseProgram(m_simpleShader);
+		//glUniform1f(glGetUniformLocation(simpleShader, "t"), (float)rotation * 0);
+		glBindVertexArray(m_vao);
+		glDrawArrays(GL_TRIANGLES, 0, m_numVertices);
+		glBindVertexArray(0);
+		glUseProgram(0);
 	}
 };
 
