@@ -45,7 +45,7 @@ namespace plgn
 
 		glfwSetWindowUserPointer(m_window, this);
 		glfwMakeContextCurrent(m_window);
-		glfwSwapInterval(0);
+		glfwSwapInterval(1);
 
 		if (glewInit() != GLEW_OK)
 		{
@@ -112,12 +112,12 @@ namespace plgn
 		}
 	}
 
-	bool Application::isKeyDown(int key)
+	bool Application::isKeyDown(int key) const
 	{
 		return glfwGetKey(m_window, key);
 	}
 
-	bool Application::wasKeyPressed(int key)
+	bool Application::wasKeyPressed(int key) const
 	{
 		return m_pressedKeys.count(key) == 1;
 	}

@@ -12,18 +12,11 @@ static const char* simpleVertexShader = R"(
 		vec3 color;
 	} vs_out;
 
-	uniform float t;
+	uniform mat4 projectionMatrix = mat4(1.0);
 
 	void main()
 	{
-		float c = cos(t);
-		float s = sin(t);
-		mat3 m = mat3(
-			 c,  s,  0,
-			-s,  c,  0,
-			 0,  0,  1
-		);
-		gl_Position = vec4(m * in_position, 1.0);
+		gl_Position = projectionMatrix * vec4(in_position, 1.0);
 		vs_out.color = in_color;
 	}
 )";
@@ -109,6 +102,10 @@ namespace demo
 
 	void DemoApplication::init()
 	{
+		float pw = getWidth() / (float)glm::min(getWidth(), getHeight());
+		float ph = getHeight() / (float)glm::min(getWidth(), getHeight());
+		m_projectionMatrix = glm::ortho(-pw, pw, -ph, ph, 1.0f, -1.0f);
+
 		m_simpleShader = createShader(simpleVertexShader, simpleFragmentShader);
 		if (m_simpleShader == 0)
 		{
@@ -116,11 +113,16 @@ namespace demo
 			std::cin.get();
 			throw 1;
 		}
+		glUseProgram(m_simpleShader);
+		glUniformMatrix4fv(glGetUniformLocation(m_simpleShader, "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(m_projectionMatrix));
 
 		std::vector<GLfloat> vertices;
 		float r = 142 / 255.0f;
 		float g = 41 / 255.0f;
 		float b = 109 / 255.0f;
+		r = 0.0f;
+		g = -1.0f;
+		b = -2.0f;
 		std::srand((unsigned int)std::time(nullptr));
 		constexpr int segments = 128;
 		for (int i = 0; i < segments; i++)
@@ -147,9 +149,12 @@ namespace demo
 
 			vertices.push_back(0.0f);
 			vertices.push_back(0.0f);
-			vertices.push_back(1.2f);
-			vertices.push_back(1.2f);
-			vertices.push_back(1.2f);
+			//vertices.push_back(1.2f);
+			//vertices.push_back(1.2f);
+			//vertices.push_back(1.2f);
+			vertices.push_back(1.0f);
+			vertices.push_back(2.0f);
+			vertices.push_back(3.0f);
 		}
 		m_numVertices = vertices.size();
 
@@ -179,11 +184,10 @@ namespace demo
 
 	void DemoApplication::render()
 	{
-		glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
+		//glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 		glUseProgram(m_simpleShader);
-		//glUniform1f(glGetUniformLocation(simpleShader, "t"), (float)rotation * 0);
 		glBindVertexArray(m_vao);
 		glDrawArrays(GL_TRIANGLES, 0, m_numVertices);
 		glBindVertexArray(0);

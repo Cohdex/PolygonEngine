@@ -34,7 +34,10 @@ namespace plgn
 		void start();
 		void stop();
 
-		bool isKeyDown(int key);
-		bool wasKeyPressed(int key);
+		bool isKeyDown(int key) const;
+		bool wasKeyPressed(int key) const;
+
+		int getWidth() const { return m_width; }
+		int getHeight() const { return m_height; }
 	};
 }
