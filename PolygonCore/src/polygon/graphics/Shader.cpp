@@ -88,4 +88,44 @@ namespace plgn
 	{
 		glUseProgram(m_program);
 	}
+
+	GLint Shader::getUniformLocation(const std::string& uniformName) const
+	{
+		return glGetUniformLocation(m_program, uniformName.c_str());
+	}
+
+	void Shader::setUniform(const std::string& uniformName, float x)
+	{
+		glUniform1f(getUniformLocation(uniformName), x);
+	}
+
+	void Shader::setUniform(const std::string& uniformName, const glm::vec2& v)
+	{
+		glUniform2fv(getUniformLocation(uniformName), 1, glm::value_ptr(v));
+	}
+
+	void Shader::setUniform(const std::string& uniformName, const glm::vec3& v)
+	{
+		glUniform3fv(getUniformLocation(uniformName), 1, glm::value_ptr(v));
+	}
+
+	void Shader::setUniform(const std::string& uniformName, const glm::vec4& v)
+	{
+		glUniform4fv(getUniformLocation(uniformName), 1, glm::value_ptr(v));
+	}
+
+	void Shader::setUniform(const std::string& uniformName, const glm::mat2& m)
+	{
+		glUniformMatrix2fv(getUniformLocation(uniformName), 1, GL_FALSE, glm::value_ptr(m));
+	}
+
+	void Shader::setUniform(const std::string& uniformName, const glm::mat3& m)
+	{
+		glUniformMatrix3fv(getUniformLocation(uniformName), 1, GL_FALSE, glm::value_ptr(m));
+	}
+
+	void Shader::setUniform(const std::string& uniformName, const glm::mat4& m)
+	{
+		glUniformMatrix4fv(getUniformLocation(uniformName), 1, GL_FALSE, glm::value_ptr(m));
+	}
 }

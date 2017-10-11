@@ -53,9 +53,14 @@ namespace demo
 
 		m_simpleShader = std::make_unique<plgn::Shader>(simpleVertexShader, simpleFragmentShader);
 		m_simpleShader->use();
-		glUniformMatrix4fv(glGetUniformLocation(m_simpleShader->getProgramHandle(), "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(m_projectionMatrix));
-
-		std::vector<GLfloat> vertices;
+		m_simpleShader->setUniform("projectionMatrix", m_projectionMatrix);
+		
+		struct Vertex
+		{
+			glm::vec2 position;
+			glm::vec3 color;
+		};
+		std::vector<Vertex> vertices;
 		float r = 142 / 255.0f;
 		float g = 41 / 255.0f;
 		float b = 109 / 255.0f;
@@ -74,26 +79,24 @@ namespace demo
 			GLfloat x1 = (GLfloat)std::cos((double)(i + 1) / segments * M_PI * 2) * 0.8f;
 			GLfloat y1 = (GLfloat)std::sin((double)(i + 1) / segments * M_PI * 2) * 0.8f;
 
-			vertices.push_back(x0);
-			vertices.push_back(y0);
-			vertices.push_back(r);
-			vertices.push_back(g);
-			vertices.push_back(b);
+			vertices.emplace_back(x0, y0, r, g, b);
+			vertices.emplace_back(x1, y1, r, g, b);
+			vertices.emplace_back(0.0f, 0.0f, 1.0f, 2.0f, 3.0f);
 
-			vertices.push_back(x1);
-			vertices.push_back(y1);
-			vertices.push_back(r);
-			vertices.push_back(g);
-			vertices.push_back(b);
+			//vertices.push_back(x1);
+			//vertices.push_back(y1);
+			//vertices.push_back(r);
+			//vertices.push_back(g);
+			//vertices.push_back(b);
 
-			vertices.push_back(0.0f);
-			vertices.push_back(0.0f);
+			//vertices.push_back(0.0f);
+			//vertices.push_back(0.0f);
 			//vertices.push_back(1.2f);
 			//vertices.push_back(1.2f);
 			//vertices.push_back(1.2f);
-			vertices.push_back(1.0f);
-			vertices.push_back(2.0f);
-			vertices.push_back(3.0f);
+			//vertices.push_back(1.0f);
+			//vertices.push_back(2.0f);
+			//vertices.push_back(3.0f);
 		}
 		m_numVertices = vertices.size();
 
@@ -102,12 +105,12 @@ namespace demo
 		glBindVertexArray(m_vao);
 		{
 			glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
 
 			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
+			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
 			glEnableVertexAttribArray(1);
-			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
 		}
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
