@@ -13,10 +13,11 @@ static const std::string simpleVertexShader = R"(
 	} vs_out;
 
 	uniform mat4 projectionMatrix = mat4(1.0);
+	uniform mat4 viewMatrix = mat4(1.0);
 
 	void main()
 	{
-		gl_Position = projectionMatrix * vec4(in_position, 1.0);
+		gl_Position = projectionMatrix * viewMatrix * vec4(in_position, 1.0);
 		vs_out.color = in_color;
 	}
 )";
@@ -111,6 +112,24 @@ namespace demo
 		{
 			stop();
 		}
+
+		float moveSpeed = (float)(0.5 * deltaTime);
+		if (isKeyDown(GLFW_KEY_RIGHT))
+		{
+			m_viewPosition.x += moveSpeed;
+		}
+		if (isKeyDown(GLFW_KEY_LEFT))
+		{
+			m_viewPosition.x -= moveSpeed;
+		}
+		if (isKeyDown(GLFW_KEY_UP))
+		{
+			m_viewPosition.y += moveSpeed;
+		}
+		if (isKeyDown(GLFW_KEY_DOWN))
+		{
+			m_viewPosition.y -= moveSpeed;
+		}
 	}
 
 	void DemoApplication::render()
@@ -119,6 +138,7 @@ namespace demo
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 		m_simpleShader->use();
+		m_simpleShader->setUniform("viewMatrix", glm::translate(glm::mat4(), -m_viewPosition));
 		glBindVertexArray(m_vao);
 		glDrawArrays(GL_TRIANGLES, 0, m_numVertices);
 		glBindVertexArray(0);

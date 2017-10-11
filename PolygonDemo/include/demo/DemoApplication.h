@@ -8,6 +8,7 @@ namespace demo
 	{
 	private:
 		glm::mat4 m_projectionMatrix;
+		glm::vec3 m_viewPosition;
 
 		std::unique_ptr<plgn::Shader> m_simpleShader;
 		GLuint m_vbo, m_vao;
