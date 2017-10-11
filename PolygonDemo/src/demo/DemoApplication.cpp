@@ -41,7 +41,7 @@ static const std::string simpleFragmentShader = R"(
 
 namespace demo
 {
-	DemoApplication::DemoApplication() : Application("Demo Application", 1920, 1080)
+	DemoApplication::DemoApplication() : Application("Demo Application", 640, 480)
 	{
 	}
 
@@ -59,14 +59,17 @@ namespace demo
 		{
 			glm::vec2 position;
 			glm::vec3 color;
+
+			Vertex(const glm::vec2& pos, const glm::vec3& col) : position(pos), color(col) { }
 		};
 		std::vector<Vertex> vertices;
-		float r = 142 / 255.0f;
-		float g = 41 / 255.0f;
-		float b = 109 / 255.0f;
-		r = 0.0f;
-		g = -1.0f;
-		b = -2.0f;
+		glm::vec3 color;
+		color.r = 142 / 255.0f;
+		color.g = 41 / 255.0f;
+		color.b = 109 / 255.0f;
+		//color.r = 0.0f;
+		//color.g = -1.0f;
+		//color.b = -2.0f;
 		std::srand((unsigned int)std::time(nullptr));
 		constexpr int segments = 128;
 		for (int i = 0; i < segments; i++)
@@ -74,29 +77,15 @@ namespace demo
 			//r = (std::rand() % 256) / 255.0f;
 			//g = (std::rand() % 256) / 255.0f;
 			//b = (std::rand() % 256) / 255.0f;
-			GLfloat x0 = (GLfloat)std::cos((double)i / segments * M_PI * 2) * 0.8f;
-			GLfloat y0 = (GLfloat)std::sin((double)i / segments * M_PI * 2) * 0.8f;
-			GLfloat x1 = (GLfloat)std::cos((double)(i + 1) / segments * M_PI * 2) * 0.8f;
-			GLfloat y1 = (GLfloat)std::sin((double)(i + 1) / segments * M_PI * 2) * 0.8f;
+			glm::vec2 p0, p1;
+			p0.x = (GLfloat)std::cos((double)i / segments * M_PI * 2) * 0.8f;
+			p0.y = (GLfloat)std::sin((double)i / segments * M_PI * 2) * 0.8f;
+			p1.x = (GLfloat)std::cos((double)(i + 1) / segments * M_PI * 2) * 0.8f;
+			p1.y = (GLfloat)std::sin((double)(i + 1) / segments * M_PI * 2) * 0.8f;
 
-			vertices.emplace_back(x0, y0, r, g, b);
-			vertices.emplace_back(x1, y1, r, g, b);
-			vertices.emplace_back(0.0f, 0.0f, 1.0f, 2.0f, 3.0f);
-
-			//vertices.push_back(x1);
-			//vertices.push_back(y1);
-			//vertices.push_back(r);
-			//vertices.push_back(g);
-			//vertices.push_back(b);
-
-			//vertices.push_back(0.0f);
-			//vertices.push_back(0.0f);
-			//vertices.push_back(1.2f);
-			//vertices.push_back(1.2f);
-			//vertices.push_back(1.2f);
-			//vertices.push_back(1.0f);
-			//vertices.push_back(2.0f);
-			//vertices.push_back(3.0f);
+			vertices.emplace_back(p0, color);
+			vertices.emplace_back(p1, color);
+			vertices.emplace_back(glm::vec2(0.0f, 0.0f), glm::vec3(1.0f, 2.0f, 3.0f));
 		}
 		m_numVertices = vertices.size();
 
