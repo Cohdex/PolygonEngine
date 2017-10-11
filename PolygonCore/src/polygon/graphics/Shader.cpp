@@ -99,6 +99,11 @@ namespace plgn
 		glUniform1f(getUniformLocation(uniformName), x);
 	}
 
+	void Shader::setUniform(const std::string& uniformName, int x)
+	{
+		glUniform1i(getUniformLocation(uniformName), x);
+	}
+
 	void Shader::setUniform(const std::string& uniformName, const glm::vec2& v)
 	{
 		glUniform2fv(getUniformLocation(uniformName), 1, glm::value_ptr(v));

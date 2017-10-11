@@ -27,6 +27,7 @@ namespace plgn
 		GLint getUniformLocation(const std::string& uniformName) const;
 
 		void setUniform(const std::string& uniformName, float x);
+		void setUniform(const std::string& uniformName, int x);
 
 		void setUniform(const std::string& uniformName, const glm::vec2& v);
 		void setUniform(const std::string& uniformName, const glm::vec3& v);
