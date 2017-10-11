@@ -52,12 +52,6 @@ namespace demo
 		m_projectionMatrix = glm::ortho(-pw, pw, -ph, ph, 1.0f, -1.0f);
 
 		m_simpleShader = std::make_unique<plgn::Shader>(simpleVertexShader, simpleFragmentShader);
-		if (m_simpleShader == 0)
-		{
-			glfwTerminate();
-			std::cin.get();
-			throw 1;
-		}
 		m_simpleShader->use();
 		glUniformMatrix4fv(glGetUniformLocation(m_simpleShader->getProgramHandle(), "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(m_projectionMatrix));
 

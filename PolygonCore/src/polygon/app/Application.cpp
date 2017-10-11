@@ -11,9 +11,18 @@ namespace plgn
 
 	void Application::start()
 	{
-		createWindow();
-		init();
-		appLoop();
+		try
+		{
+			createWindow();
+			init();
+			appLoop();
+		}
+		catch (int e)
+		{
+			glfwTerminate();
+			std::cin.get();
+			throw e;
+		}
 	}
 
 	void Application::stop()
