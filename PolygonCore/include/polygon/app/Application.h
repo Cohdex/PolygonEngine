@@ -32,13 +32,13 @@ namespace plgn
 		Application(const Application&) = delete;
 		Application& operator=(const Application&) = delete;
 
+		int getWidth() const { return m_width; }
+		int getHeight() const { return m_height; }
+
 		void start();
 		void stop();
 
 		bool isKeyDown(int key) const;
 		bool wasKeyPressed(int key) const;
-
-		int getWidth() const { return m_width; }
-		int getHeight() const { return m_height; }
 	};
 }

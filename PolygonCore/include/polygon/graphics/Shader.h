@@ -15,6 +15,8 @@ namespace plgn
 
 	public:
 		Shader(const std::string& vertexSource, const std::string& fragmentSource);
+		Shader(const Shader&) = delete;
+		Shader& operator=(const Shader&) = delete;
 
 		void destroy();
 

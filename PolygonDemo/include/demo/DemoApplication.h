@@ -15,6 +15,8 @@ namespace demo
 
 	public:
 		DemoApplication();
+		DemoApplication(const DemoApplication&) = delete;
+		DemoApplication& operator=(const DemoApplication&) = delete;
 
 	private:
 		void init() override;
