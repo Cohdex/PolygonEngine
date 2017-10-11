@@ -15,8 +15,6 @@ namespace plgn
 	public:
 		Shader(const std::string& vertexSource, const std::string& fragmentSource);
 
-		~Shader() { std::cout << "shader deleted" << std::endl; }
-
 		void destroy();
 
 		GLuint getProgramHandle() const { return m_program; }
