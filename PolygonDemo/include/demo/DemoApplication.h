@@ -9,7 +9,7 @@ namespace demo
 	private:
 		glm::mat4 m_projectionMatrix;
 
-		GLuint m_simpleShader;
+		std::unique_ptr<plgn::Shader> m_simpleShader;
 		GLuint m_vbo, m_vao;
 		int m_numVertices;
 
@@ -20,5 +20,6 @@ namespace demo
 		void init() override;
 		void update(double deltaTime) override;
 		void render() override;
+		void dispose() override;
 	};
 }

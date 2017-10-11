@@ -5,14 +5,16 @@
 
 #pragma once
 
-#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
+#define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
 
-// TODO: reference additional headers your program requires here
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
+// C++ standard lib includes
 #include <iostream>
 #include <string>
 
-#include "include/polygon/app/Application.h"
+// OpenGL lib includes
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
+// Polygon Core includes
+#include <polygon/app/Application.h>
+#include <polygon/graphics/Shader.h>

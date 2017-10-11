@@ -26,6 +26,7 @@ namespace plgn
 		virtual void init() = 0;
 		virtual void update(double deltaTime) = 0;
 		virtual void render() = 0;
+		virtual void dispose() = 0;
 
 	public:
 		Application(const Application&) = delete;

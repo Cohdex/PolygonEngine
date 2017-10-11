@@ -100,6 +100,8 @@ namespace plgn
 			}
 		}
 
+		dispose();
+
 		glfwTerminate();
 	}
 

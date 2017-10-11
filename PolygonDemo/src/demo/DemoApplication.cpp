@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-static const char* simpleVertexShader = R"(
+static const std::string simpleVertexShader = R"(
 	#version 450 core
 	#line 18
 
@@ -21,7 +21,7 @@ static const char* simpleVertexShader = R"(
 	}
 )";
 
-static const char* simpleFragmentShader = R"(
+static const std::string simpleFragmentShader = R"(
 	#version 450 core
 	#line 28
 
@@ -39,61 +39,6 @@ static const char* simpleFragmentShader = R"(
 	}
 )";
 
-static GLuint createShader(const char* vertexSource, const char* fragmentSource)
-{
-	GLint status;
-	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexSource, nullptr);
-	glCompileShader(vertexShader);
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &status);
-	if (status == GL_FALSE)
-	{
-		GLint logSize;
-		glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &logSize);
-		std::vector<char> log(logSize);
-		glGetShaderInfoLog(vertexShader, logSize, nullptr, log.data());
-		glDeleteShader(vertexShader);
-		std::cout << "Failed to compile vertex shader:\n" << log.data() << std::endl;
-		return 0;
-	}
-
-	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentSource, nullptr);
-	glCompileShader(fragmentShader);
-	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &status);
-	if (status == GL_FALSE)
-	{
-		GLint logSize;
-		glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &logSize);
-		std::vector<char> log(logSize);
-		glGetShaderInfoLog(fragmentShader, logSize, nullptr, log.data());
-		glDeleteShader(vertexShader);
-		glDeleteProgram(fragmentShader);
-		std::cout << "Failed to compile fragment shader:\n" << log.data() << std::endl;
-		return 0;
-	}
-
-	GLuint program = glCreateProgram();
-	glAttachShader(program, vertexShader);
-	glAttachShader(program, fragmentShader);
-	glLinkProgram(program);
-	glDeleteShader(vertexShader);
-	glDeleteProgram(fragmentShader);
-	glGetProgramiv(program, GL_LINK_STATUS, &status);
-	if (status == GL_FALSE)
-	{
-		GLint logSize;
-		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logSize);
-		std::vector<char> log(logSize);
-		glGetProgramInfoLog(program, logSize, nullptr, log.data());
-		glDeleteProgram(program);
-		std::cout << "Failed to compile fragment shader:\n" << log.data() << std::endl;
-		return 0;
-	}
-
-	return program;
-}
-
 namespace demo
 {
 	DemoApplication::DemoApplication() : Application("Demo Application", 1920, 1080)
@@ -106,15 +51,15 @@ namespace demo
 		float ph = getHeight() / (float)glm::min(getWidth(), getHeight());
 		m_projectionMatrix = glm::ortho(-pw, pw, -ph, ph, 1.0f, -1.0f);
 
-		m_simpleShader = createShader(simpleVertexShader, simpleFragmentShader);
+		m_simpleShader = std::make_unique<plgn::Shader>(simpleVertexShader, simpleFragmentShader);
 		if (m_simpleShader == 0)
 		{
 			glfwTerminate();
 			std::cin.get();
 			throw 1;
 		}
-		glUseProgram(m_simpleShader);
-		glUniformMatrix4fv(glGetUniformLocation(m_simpleShader, "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(m_projectionMatrix));
+		m_simpleShader->use();
+		glUniformMatrix4fv(glGetUniformLocation(m_simpleShader->getProgramHandle(), "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(m_projectionMatrix));
 
 		std::vector<GLfloat> vertices;
 		float r = 142 / 255.0f;
@@ -187,10 +132,16 @@ namespace demo
 		//glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-		glUseProgram(m_simpleShader);
+		m_simpleShader->use();
 		glBindVertexArray(m_vao);
 		glDrawArrays(GL_TRIANGLES, 0, m_numVertices);
 		glBindVertexArray(0);
 		glUseProgram(0);
+	}
+
+	void DemoApplication::dispose()
+	{
+		m_simpleShader->destroy();
+		m_simpleShader.reset();
 	}
 }
