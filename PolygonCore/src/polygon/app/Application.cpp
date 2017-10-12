@@ -44,8 +44,8 @@ namespace plgn
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_SAMPLES, 4);
 		const GLFWvidmode* vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-		//m_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
-		m_window = glfwCreateWindow(vidmode->width, vidmode->height, m_title.c_str(), glfwGetPrimaryMonitor(), nullptr);
+		m_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
+		//m_window = glfwCreateWindow(vidmode->width, vidmode->height, m_title.c_str(), glfwGetPrimaryMonitor(), nullptr);
 		if (!m_window)
 		{
 			glfwTerminate();

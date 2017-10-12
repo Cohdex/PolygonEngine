@@ -8,12 +8,12 @@ static const std::string simpleVertexShader = R"(
 
 	layout(location = 0) in vec3 in_position;
 	layout(location = 1) in vec2 in_texCoord;
-	layout(location = 2) in vec3 in_color;
+	layout(location = 2) in vec4 in_color;
 
 	out VS_OUT
 	{
 		vec2 texCoord;
-		vec3 color;
+		vec4 color;
 	} vs_out;
 
 	uniform mat4 projectionMatrix = mat4(1.0);
@@ -34,7 +34,7 @@ static const std::string simpleFragmentShader = R"(
 	in VS_OUT
 	{
 		vec2 texCoord;
-		vec3 color;
+		vec4 color;
 	} fs_in;
 
 	layout(location = 0) out vec4 fragColor;
@@ -90,14 +90,14 @@ static const std::string simpleFragmentShader = R"(
 	void main()
 	{
 		vec3 color = textureBicubic(tex, fs_in.texCoord).rgb;
-		color *= fs_in.color;
-		fragColor = vec4(color, 1.0);
+		color *= fs_in.color.rgb;
+		fragColor = vec4(color, sqrt(fs_in.color.a));
 	}
 )";
 
 namespace demo
 {
-	DemoApplication::DemoApplication() : Application("Demo Application", 640, 480)
+	DemoApplication::DemoApplication() : Application("Demo Application", 1920, 1080)
 	{
 	}
 
@@ -115,19 +115,20 @@ namespace demo
 		{
 			glm::vec3 position;
 			glm::vec2 texCoord;
-			glm::vec3 color;
+			glm::vec4 color;
 
-			Vertex(const glm::vec3& pos, const glm::vec2& tc, const glm::vec3& col)
+			Vertex(const glm::vec3& pos, const glm::vec2& tc, const glm::vec4& col)
 				: position(pos), texCoord(tc), color(col) { }
 		};
 		constexpr int segments = 128;
 		std::vector<Vertex> vertices;
 		vertices.reserve(segments + 1);
-		vertices.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.5f, 0.5f), glm::vec3(1.0f, 2.0f, 3.0f));
-		glm::vec3 color;
+		vertices.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.5f, 0.5f), glm::vec4(1.0f, 2.0f, 3.0f, 1.0f));
+		glm::vec4 color;
 		color.r = 142 / 255.0f;
 		color.g = 41 / 255.0f;
 		color.b = 109 / 255.0f;
+		color.a = 0.0f;
 		//color.r = 0.0f;
 		//color.g = -1.0f;
 		//color.b = -2.0f;
@@ -171,7 +172,7 @@ namespace demo
 			glEnableVertexAttribArray(1);
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
 			glEnableVertexAttribArray(2);
-			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
+			glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
 
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * indices.size(), indices.data(), GL_STATIC_DRAW);
@@ -180,19 +181,24 @@ namespace demo
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-		unsigned int texSize = 8;
+		unsigned int texSize = 32;
 		std::vector<unsigned char> pixels;
 		pixels.reserve(texSize * texSize * 3);
 		for (unsigned int y = 0; y < texSize; y++)
 		{
 			for (unsigned int x = 0; x < texSize; x++)
 			{
-				pixels.push_back((unsigned char)(std::rand() % 256));
-				pixels.push_back((unsigned char)(std::rand() % 256));
-				pixels.push_back((unsigned char)(std::rand() % 256));
+				pixels.push_back((unsigned char)(std::rand() % 192) + 64);
+				pixels.push_back(pixels.back());
+				pixels.push_back(pixels.back());
+				//pixels.push_back((unsigned char)(std::rand() % 256));
+				//pixels.push_back((unsigned char)(std::rand() % 256));
 			}
 		}
 		m_texture = std::make_unique<plgn::Texture2D>(texSize, texSize, 3, pixels.data());
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	void DemoApplication::update(double deltaTime)
@@ -200,6 +206,7 @@ namespace demo
 		if (wasKeyPressed(GLFW_KEY_ESCAPE))
 		{
 			stop();
+			return;
 		}
 
 		float moveSpeed = (float)(0.5 * deltaTime);
