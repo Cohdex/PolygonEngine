@@ -63,7 +63,10 @@ namespace demo
 
 			Vertex(const glm::vec2& pos, const glm::vec3& col) : position(pos), color(col) { }
 		};
+		constexpr int segments = 128;
 		std::vector<Vertex> vertices;
+		vertices.reserve(segments + 1);
+		vertices.emplace_back(glm::vec2(0.0f, 0.0f), glm::vec3(1.0f, 2.0f, 3.0f));
 		glm::vec3 color;
 		color.r = 142 / 255.0f;
 		color.g = 41 / 255.0f;
@@ -72,25 +75,30 @@ namespace demo
 		//color.g = -1.0f;
 		//color.b = -2.0f;
 		std::srand((unsigned int)std::time(nullptr));
-		constexpr int segments = 128;
 		for (int i = 0; i < segments; i++)
 		{
-			//r = (std::rand() % 256) / 255.0f;
-			//g = (std::rand() % 256) / 255.0f;
-			//b = (std::rand() % 256) / 255.0f;
-			glm::vec2 p0, p1;
-			p0.x = (GLfloat)std::cos((double)i / segments * M_PI * 2) * 0.8f;
-			p0.y = (GLfloat)std::sin((double)i / segments * M_PI * 2) * 0.8f;
-			p1.x = (GLfloat)std::cos((double)(i + 1) / segments * M_PI * 2) * 0.8f;
-			p1.y = (GLfloat)std::sin((double)(i + 1) / segments * M_PI * 2) * 0.8f;
+			glm::vec2 position;
+			position.x = (GLfloat)std::cos((double)i / segments * M_PI * 2) * 0.8f;
+			position.y = (GLfloat)std::sin((double)i / segments * M_PI * 2) * 0.8f;
 
-			vertices.emplace_back(p0, color);
-			vertices.emplace_back(p1, color);
-			vertices.emplace_back(glm::vec2(0.0f, 0.0f), glm::vec3(1.0f, 2.0f, 3.0f));
+			color.r = (std::rand() % 256) / 255.0f;
+			color.g = (std::rand() % 256) / 255.0f;
+			color.b = (std::rand() % 256) / 255.0f;
+
+			vertices.emplace_back(position, color);
 		}
-		m_numVertices = vertices.size();
+		std::vector<GLuint> indices;
+		indices.reserve(segments * 3);
+		for (int i = 0; i < segments; i++)
+		{
+			indices.push_back(0);
+			indices.push_back(i + 1);
+			indices.push_back(i == segments - 1 ? 1 : i + 2);
+		}
+		m_numElements = indices.size();
 
 		glGenBuffers(1, &m_vbo);
+		glGenBuffers(1, &m_ebo);
 		glGenVertexArrays(1, &m_vao);
 		glBindVertexArray(m_vao);
 		{
@@ -101,9 +109,13 @@ namespace demo
 			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
 			glEnableVertexAttribArray(1);
 			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
+
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * indices.size(), indices.data(), GL_STATIC_DRAW);
 		}
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 
 	void DemoApplication::update(double deltaTime)
@@ -140,7 +152,8 @@ namespace demo
 		m_simpleShader->use();
 		m_simpleShader->setUniform("viewMatrix", glm::translate(glm::mat4(), -m_viewPosition));
 		glBindVertexArray(m_vao);
-		glDrawArrays(GL_TRIANGLES, 0, m_numVertices);
+		//glDrawArrays(GL_TRIANGLES, 0, m_numElements);
+		glDrawElements(GL_TRIANGLES, m_numElements, GL_UNSIGNED_INT, nullptr);
 		glBindVertexArray(0);
 		glUseProgram(0);
 	}
@@ -149,5 +162,9 @@ namespace demo
 	{
 		m_simpleShader->destroy();
 		m_simpleShader.reset();
+
+		glDeleteVertexArrays(1, &m_vao); m_vao = 0;
+		glDeleteBuffers(1, &m_vbo); m_vbo = 0;
+		glDeleteBuffers(1, &m_ebo); m_ebo = 0;
 	}
 }

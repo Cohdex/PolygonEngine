@@ -11,8 +11,8 @@ namespace demo
 		glm::vec3 m_viewPosition;
 
 		std::unique_ptr<plgn::Shader> m_simpleShader;
-		GLuint m_vbo, m_vao;
-		int m_numVertices;
+		GLuint m_vao, m_vbo, m_ebo;
+		int m_numElements;
 
 	public:
 		DemoApplication();
