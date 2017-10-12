@@ -91,7 +91,7 @@ static const std::string simpleFragmentShader = R"(
 	{
 		vec3 color = textureBicubic(tex, fs_in.texCoord).rgb;
 		color *= fs_in.color.rgb;
-		fragColor = vec4(color, sqrt(fs_in.color.a));
+		fragColor = vec4(color, smoothstep(0.0, 1.0, fs_in.color.a));
 	}
 )";
 
@@ -103,9 +103,10 @@ namespace demo
 
 	void DemoApplication::init()
 	{
-		float pw = getWidth() / (float)glm::min(getWidth(), getHeight());
-		float ph = getHeight() / (float)glm::min(getWidth(), getHeight());
-		m_projectionMatrix = glm::ortho(-pw, pw, -ph, ph, 1.0f, -1.0f);
+		//float pw = getWidth() / (float)glm::min(getWidth(), getHeight());
+		//float ph = getHeight() / (float)glm::min(getWidth(), getHeight());
+		//m_projectionMatrix = glm::ortho(-pw, pw, -ph, ph, 1.0f, -1.0f);
+		m_projectionMatrix = glm::perspective(glm::radians(90.0f), (float)getWidth() / getHeight(), 0.01f, 50.0f);
 
 		m_simpleShader = std::make_unique<plgn::Shader>(simpleVertexShader, simpleFragmentShader);
 		m_simpleShader->use();
@@ -220,21 +221,25 @@ namespace demo
 		}
 		if (isKeyDown(GLFW_KEY_UP))
 		{
-			m_viewPosition.y += moveSpeed;
+			m_viewPosition.z -= moveSpeed;
 		}
 		if (isKeyDown(GLFW_KEY_DOWN))
 		{
-			m_viewPosition.y -= moveSpeed;
+			m_viewPosition.z += moveSpeed;
 		}
 	}
 
 	void DemoApplication::render()
 	{
-		//glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
+		glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+		glm::mat4 viewMatrix = glm::lookAt(m_viewPosition, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
 		m_simpleShader->use();
-		m_simpleShader->setUniform("viewMatrix", glm::translate(glm::mat4(), -m_viewPosition));
+		m_simpleShader->setUniform("viewMatrix", viewMatrix);
 		m_texture->bind();
 		glBindVertexArray(m_vao);
 		//glDrawArrays(GL_TRIANGLES, 0, m_numElements);

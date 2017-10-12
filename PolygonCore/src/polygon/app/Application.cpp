@@ -68,6 +68,7 @@ namespace plgn
 
 		glfwGetFramebufferSize(m_window, &m_width, &m_height);
 		glViewport(0, 0, m_width, m_height);
+
 		glEnable(GL_MULTISAMPLE);
 
 		glfwSetWindowSizeCallback(m_window, resizeCallback);
@@ -111,7 +112,7 @@ namespace plgn
 		glfwTerminate();
 	}
 
-	void resizeCallback(GLFWwindow* window, int width, int height)
+	static void resizeCallback(GLFWwindow* window, int width, int height)
 	{
 		Application* app = (Application*)glfwGetWindowUserPointer(window);
 		app->m_width = width;
@@ -119,7 +120,7 @@ namespace plgn
 		glViewport(0, 0, width, height);
 	}
 
-	void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
 		Application* app = (Application*)glfwGetWindowUserPointer(window);
 		if (action == GLFW_PRESS)
