@@ -25,6 +25,6 @@
 // Polygon Core lib includes
 #include <polygon/app/Application.h>
 #include <polygon/graphics/Shader.h>
+#include <polygon/graphics/texture/Texture2D.h>
 
 // Polygon Demo includes
-#include <include/demo/DemoApplication.h>

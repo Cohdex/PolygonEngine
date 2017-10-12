@@ -43,7 +43,9 @@ namespace plgn
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_SAMPLES, 4);
-		m_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
+		const GLFWvidmode* vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		//m_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
+		m_window = glfwCreateWindow(vidmode->width, vidmode->height, m_title.c_str(), glfwGetPrimaryMonitor(), nullptr);
 		if (!m_window)
 		{
 			glfwTerminate();
@@ -64,16 +66,11 @@ namespace plgn
 			throw -2;
 		}
 
-		int screenWidth, screenHeight;
-		glfwGetFramebufferSize(m_window, &screenWidth, &screenHeight);
-		glViewport(0, 0, screenWidth, screenHeight);
+		glfwGetFramebufferSize(m_window, &m_width, &m_height);
+		glViewport(0, 0, m_width, m_height);
 		glEnable(GL_MULTISAMPLE);
 
-		auto windowResizeCallback = [](GLFWwindow* window, int newWidth, int newHeight) {
-			glViewport(0, 0, newWidth, newHeight);
-		};
-		glfwSetWindowSizeCallback(m_window, windowResizeCallback);
-
+		glfwSetWindowSizeCallback(m_window, resizeCallback);
 		glfwSetKeyCallback(m_window, keyCallback);
 
 		std::cout << "OpenGL: " << glGetString(GL_VERSION) << std::endl;
@@ -112,6 +109,14 @@ namespace plgn
 		dispose();
 
 		glfwTerminate();
+	}
+
+	void resizeCallback(GLFWwindow* window, int width, int height)
+	{
+		Application* app = (Application*)glfwGetWindowUserPointer(window);
+		app->m_width = width;
+		app->m_height = height;
+		glViewport(0, 0, width, height);
 	}
 
 	void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)

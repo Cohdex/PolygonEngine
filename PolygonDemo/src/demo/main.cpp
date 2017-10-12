@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include <demo/DemoApplication.h>
+
 int main(void)
 {
 	plgn::Application* app = new demo::DemoApplication();

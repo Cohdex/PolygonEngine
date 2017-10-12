@@ -7,6 +7,7 @@ namespace plgn
 {
 	class Application
 	{
+		friend void resizeCallback(GLFWwindow* window, int width, int height);
 		friend void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 	private:
