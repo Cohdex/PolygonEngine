@@ -21,3 +21,4 @@
 // Polygon Core includes
 #include <polygon/app/Application.h>
 #include <polygon/graphics/Shader.h>
+#include <polygon/graphics/texture/Texture2D.h>
