@@ -231,10 +231,9 @@ namespace demo
 
 	void DemoApplication::render()
 	{
-		glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
+		//glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 		glm::mat4 viewMatrix = glm::lookAt(m_viewPosition, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -242,7 +241,6 @@ namespace demo
 		m_simpleShader->setUniform("viewMatrix", viewMatrix);
 		m_texture->bind();
 		glBindVertexArray(m_vao);
-		//glDrawArrays(GL_TRIANGLES, 0, m_numElements);
 		glDrawElements(GL_TRIANGLES, m_numElements, GL_UNSIGNED_INT, nullptr);
 		glBindVertexArray(0);
 		glUseProgram(0);
