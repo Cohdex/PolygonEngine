@@ -39,13 +39,20 @@ namespace plgn
 			throw -1;
 		}
 
+		const GLFWvidmode* vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		glfwWindowHint(GLFW_RED_BITS, vidmode->redBits);
+		glfwWindowHint(GLFW_GREEN_BITS, vidmode->greenBits);
+		glfwWindowHint(GLFW_BLUE_BITS, vidmode->blueBits);
+		glfwWindowHint(GLFW_REFRESH_RATE, vidmode->refreshRate);
+		glfwWindowHint(GLFW_AUTO_ICONIFY, GLFW_FALSE);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_SAMPLES, 4);
-		const GLFWvidmode* vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-		m_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
-		//m_window = glfwCreateWindow(vidmode->width, vidmode->height, m_title.c_str(), glfwGetPrimaryMonitor(), nullptr);
+		if (true)
+			m_window = glfwCreateWindow(vidmode->width, vidmode->height, m_title.c_str(), glfwGetPrimaryMonitor(), nullptr);
+		else
+			m_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
 		if (!m_window)
 		{
 			glfwTerminate();
