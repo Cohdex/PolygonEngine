@@ -103,10 +103,9 @@ namespace demo
 
 	void DemoApplication::init()
 	{
-		//float pw = getWidth() / (float)glm::min(getWidth(), getHeight());
-		//float ph = getHeight() / (float)glm::min(getWidth(), getHeight());
-		//m_projectionMatrix = glm::ortho(-pw, pw, -ph, ph, 1.0f, -1.0f);
 		m_projectionMatrix = glm::perspective(glm::radians(90.0f), (float)getWidth() / getHeight(), 0.01f, 50.0f);
+
+		m_viewPosition.z = 1;
 
 		m_simpleShader = std::make_unique<plgn::Shader>(simpleVertexShader, simpleFragmentShader);
 		m_simpleShader->use();
@@ -126,10 +125,10 @@ namespace demo
 		vertices.reserve(segments + 1);
 		vertices.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.5f, 0.5f), glm::vec4(1.0f, 2.0f, 3.0f, 1.0f));
 		glm::vec4 color;
-		color.r = 142 / 255.0f;
-		color.g = 41 / 255.0f;
-		color.b = 109 / 255.0f;
 		color.a = 0.0f;
+		//color.r = 142 / 255.0f;
+		//color.g = 41 / 255.0f;
+		//color.b = 109 / 255.0f;
 		//color.r = 0.0f;
 		//color.g = -1.0f;
 		//color.b = -2.0f;
@@ -210,23 +209,27 @@ namespace demo
 			return;
 		}
 
+		float rotSpeed = (float)glm::radians(90.0 * deltaTime);
 		float moveSpeed = (float)(0.5 * deltaTime);
 		if (isKeyDown(GLFW_KEY_RIGHT))
 		{
-			m_viewPosition.x += moveSpeed;
+			m_rotation += rotSpeed;
 		}
 		if (isKeyDown(GLFW_KEY_LEFT))
 		{
-			m_viewPosition.x -= moveSpeed;
+			m_rotation -= rotSpeed;
 		}
 		if (isKeyDown(GLFW_KEY_UP))
 		{
-			m_viewPosition.z -= moveSpeed;
+			m_distance -= moveSpeed;
 		}
 		if (isKeyDown(GLFW_KEY_DOWN))
 		{
-			m_viewPosition.z += moveSpeed;
+			m_distance += moveSpeed;
 		}
+
+		m_viewPosition.x = (float)std::sin(m_rotation) * m_distance;
+		m_viewPosition.z = (float)std::cos(m_rotation) * m_distance;
 	}
 
 	void DemoApplication::render()

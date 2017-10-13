@@ -64,34 +64,34 @@ namespace plgn
 			throw 2;
 		}
 
-		m_program = glCreateProgram();
-		bool success = linkProgram(m_program, vertexShader, fragmentShader);
+		m_programId = glCreateProgram();
+		bool success = linkProgram(m_programId, vertexShader, fragmentShader);
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
 		if (!success)
 		{
-			std::string log = getProgramLog(m_program);
+			std::string log = getProgramLog(m_programId);
 			std::cout << "Failed to link shader:" << std::endl;
 			std::cout << log << std::endl;
-			glDeleteProgram(m_program);
+			glDeleteProgram(m_programId);
 			throw 3;
 		}
 	}
 
 	void Shader::destroy()
 	{
-		glDeleteProgram(m_program);
-		m_program = 0;
+		glDeleteProgram(m_programId);
+		m_programId = 0;
 	}
 
 	void Shader::use() const
 	{
-		glUseProgram(m_program);
+		glUseProgram(m_programId);
 	}
 
 	GLint Shader::getUniformLocation(const std::string& uniformName) const
 	{
-		return glGetUniformLocation(m_program, uniformName.c_str());
+		return glGetUniformLocation(m_programId, uniformName.c_str());
 	}
 
 	void Shader::setUniform(const std::string& uniformName, float x)

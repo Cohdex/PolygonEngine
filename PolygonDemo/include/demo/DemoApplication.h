@@ -9,6 +9,8 @@ namespace demo
 	private:
 		glm::mat4 m_projectionMatrix;
 		glm::vec3 m_viewPosition;
+		double m_rotation;
+		float m_distance = 1.0f;
 
 		std::unique_ptr<plgn::Shader> m_simpleShader;
 		GLuint m_vao, m_vbo, m_ebo;

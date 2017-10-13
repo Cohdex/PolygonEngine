@@ -11,7 +11,7 @@ namespace plgn
 	class Shader
 	{
 	private:
-		GLuint m_program;
+		GLuint m_programId;
 
 	public:
 		Shader(const std::string& vertexSource, const std::string& fragmentSource);
@@ -20,7 +20,7 @@ namespace plgn
 
 		void destroy();
 
-		GLuint getProgramHandle() const { return m_program; }
+		GLuint getProgramHandle() const { return m_programId; }
 
 		void use() const;
 
