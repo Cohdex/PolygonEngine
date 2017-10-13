@@ -18,7 +18,7 @@ namespace plgn
 		bool m_running = false;
 		std::unordered_set<int> m_pressedKeys;
 
-		void createWindow();
+		void createWindow(bool fullscreen);
 		void appLoop();
 
 	protected:

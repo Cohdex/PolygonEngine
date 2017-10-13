@@ -13,7 +13,7 @@ namespace plgn
 	{
 		try
 		{
-			createWindow();
+			createWindow(true);
 			init();
 			appLoop();
 		}
@@ -30,7 +30,7 @@ namespace plgn
 		m_running = false;
 	}
 
-	void Application::createWindow()
+	void Application::createWindow(bool fullscreen)
 	{
 		if (!glfwInit())
 		{
@@ -40,6 +40,13 @@ namespace plgn
 		}
 
 		const GLFWvidmode* vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		GLFWmonitor* monitor = nullptr;
+		if (fullscreen)
+		{
+			monitor = glfwGetPrimaryMonitor();
+			m_width = vidmode->width;
+			m_height = vidmode->height;
+		}
 		glfwWindowHint(GLFW_RED_BITS, vidmode->redBits);
 		glfwWindowHint(GLFW_GREEN_BITS, vidmode->greenBits);
 		glfwWindowHint(GLFW_BLUE_BITS, vidmode->blueBits);
@@ -49,10 +56,7 @@ namespace plgn
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_SAMPLES, 4);
-		if (true)
-			m_window = glfwCreateWindow(vidmode->width, vidmode->height, m_title.c_str(), glfwGetPrimaryMonitor(), nullptr);
-		else
-			m_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
+		m_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), monitor, nullptr);
 		if (!m_window)
 		{
 			glfwTerminate();
@@ -61,6 +65,7 @@ namespace plgn
 			throw -1;
 		}
 
+		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 		glfwSetWindowUserPointer(m_window, this);
 		glfwMakeContextCurrent(m_window);
 		glfwSwapInterval(1);
