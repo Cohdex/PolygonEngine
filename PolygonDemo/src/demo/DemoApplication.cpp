@@ -89,8 +89,8 @@ static const std::string simpleFragmentShader = R"(
 
 	void main()
 	{
-		vec3 color = textureBicubic(tex, fs_in.texCoord).rgb;
-		color *= fs_in.color.rgb;
+		vec3 texSample = textureBicubic(tex, fs_in.texCoord).rgb;
+		vec3 color = texSample * fs_in.color.rgb;
 		fragColor = vec4(color, smoothstep(0.0, 1.0, fs_in.color.a));
 	}
 )";
@@ -122,8 +122,7 @@ namespace demo
 		};
 		constexpr int segments = 128;
 		std::vector<Vertex> vertices;
-		vertices.reserve(segments + 1);
-		vertices.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.5f, 0.5f), glm::vec4(1.0f, 2.0f, 3.0f, 1.0f));
+		vertices.reserve((segments + 1) * 4);
 		glm::vec4 color;
 		color.a = 0.0f;
 		//color.r = 142 / 255.0f;
@@ -133,29 +132,75 @@ namespace demo
 		//color.g = -1.0f;
 		//color.b = -2.0f;
 		std::srand((unsigned int)std::time(nullptr));
-		for (int i = 0; i < segments; i++)
+		for (int i = 0; i < 4; i++)
 		{
-			glm::vec3 position;
-			position.x = (GLfloat)std::cos((double)i / segments * M_PI * 2) * 0.8f;
-			position.y = (GLfloat)std::sin((double)i / segments * M_PI * 2) * 0.8f;
-			position.z = 0.0f;
+			if (i == 0)
+				vertices.emplace_back(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.5f, 0.5f), glm::vec4(1.0f, 2.0f, 3.0f, 1.0f));
+			else if (i == 1)
+				vertices.emplace_back(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.5f, 0.5f), glm::vec4(1.0f, 2.0f, 3.0f, 1.0f));
+			else if (i == 2)
+				vertices.emplace_back(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(0.5f, 0.5f), glm::vec4(1.0f, 2.0f, 3.0f, 1.0f));
+			else if (i == 3)
+				vertices.emplace_back(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(0.5f, 0.5f), glm::vec4(1.0f, 2.0f, 3.0f, 1.0f));
 
-			glm::vec2 texCoord;
-			texCoord = glm::vec2(position.x, position.y) / 0.8f * 0.5f + 0.5f;
+			for (int j = 0; j < segments; j++)
+			{
+				float angle = (float)j / segments * glm::two_pi<float>();
 
-			color.r = (std::rand() % 256) / 255.0f;
-			color.g = (std::rand() % 256) / 255.0f;
-			color.b = (std::rand() % 256) / 255.0f;
+				glm::vec3 position;
+				glm::vec2 texCoord;
+				if (i == 0)
+				{
+					position.x = glm::cos(angle);
+					position.y = glm::sin(angle);
+					position /= glm::max(glm::abs(position.x), glm::abs(position.y));
+					position.z = 1.0f;
+					texCoord = glm::vec2(position.x, position.y)* 0.5f + 0.5f;
+				}
+				else if (i == 1)
+				{
+					position.x = -glm::cos(angle);
+					position.y = glm::sin(angle);
+					position /= glm::max(glm::abs(position.x), glm::abs(position.y));
+					position.z = -1.0f;
+					texCoord = glm::vec2(position.x, position.y)* 0.5f + 0.5f;
+				}
+				else if (i == 2)
+				{
+					position.y = glm::sin(angle);
+					position.z = glm::cos(angle);
+					position /= glm::max(glm::abs(position.z), glm::abs(position.y));
+					position.x = 1.0f;
+					texCoord = glm::vec2(position.z, position.y)* 0.5f + 0.5f;
+				}
+				else if (i == 3)
+				{
+					position.y = glm::sin(angle);
+					position.z = -glm::cos(angle);
+					position /= glm::max(glm::abs(position.z), glm::abs(position.y));
+					position.x = -1.0f;
+					texCoord = glm::vec2(position.z, position.y)* 0.5f + 0.5f;
+				}
 
-			vertices.emplace_back(position, texCoord, color);
+				glm::vec4 color;
+				color.r = (std::rand() % 256) / 255.0f;
+				color.g = (std::rand() % 256) / 255.0f;
+				color.b = (std::rand() % 256) / 255.0f;
+				color.a = 0.0f;
+
+				vertices.emplace_back(position, texCoord, color);
+			}
 		}
 		std::vector<GLuint> indices;
-		indices.reserve(segments * 3);
-		for (int i = 0; i < segments; i++)
+		indices.reserve(segments * 3 * 4);
+		for (int i = 0; i < 4; i++)
 		{
-			indices.push_back(0);
-			indices.push_back(i + 1);
-			indices.push_back(i == segments - 1 ? 1 : i + 2);
+			for (int j = 0; j < segments; j++)
+			{
+				indices.push_back((segments + 1) * i);
+				indices.push_back((segments + 1) * i + j + 1);
+				indices.push_back((segments + 1) * i + (j == segments - 1 ? 1 : j + 2));
+			}
 		}
 		m_numElements = indices.size();
 
@@ -188,14 +233,18 @@ namespace demo
 		{
 			for (unsigned int x = 0; x < texSize; x++)
 			{
-				pixels.push_back((unsigned char)(std::rand() % 192) + 64);
-				pixels.push_back(pixels.back());
-				pixels.push_back(pixels.back());
+				pixels.push_back((unsigned char)(((std::rand() % 256) * 75 / 100) + (256 * 25 / 100)));
+				pixels.push_back((unsigned char)(((std::rand() % 256) * 75 / 100) + (256 * 25 / 100)));
+				pixels.push_back((unsigned char)(((std::rand() % 256) * 75 / 100) + (256 * 25 / 100)));
+				//pixels.push_back(pixels.back());
+				//pixels.push_back(pixels.back());
 				//pixels.push_back((unsigned char)(std::rand() % 256));
 				//pixels.push_back((unsigned char)(std::rand() % 256));
 			}
 		}
-		m_texture = std::make_unique<plgn::Texture2D>(texSize, texSize, 3, pixels.data());
+		m_texture = std::make_unique<plgn::Texture2D>(texSize, texSize, plgn::TextureFormat::RGB_8, pixels.data());
+
+		//glEnable(GL_DEPTH_TEST);
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

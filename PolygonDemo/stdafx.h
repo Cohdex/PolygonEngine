@@ -8,8 +8,6 @@
 #define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
 
 // C++ standard lib includes
-#define _USE_MATH_DEFINES
-#include <cmath>
 #include <cstdlib>
 #include <iostream>
 #include <ctime>
