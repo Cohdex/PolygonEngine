@@ -28,7 +28,7 @@ static const std::string simpleVertexShader = R"(
 		gl_Position = projectionMatrix * viewMatrix * worldPos;
 
 		vs_out.position = worldPos.xyz;
-		vs_out.normal = in_normal;
+		vs_out.normal = normalize(normalMatrix * in_normal);
 		vs_out.texCoord = in_texCoord;
 	}
 )";
@@ -218,9 +218,15 @@ namespace demo
 		m_simpleShader->use();
 		m_simpleShader->setUniform("viewMatrix", viewMatrix);
 		m_simpleShader->setUniform("viewPosition", m_viewPosition);
-		m_simpleShader->setUniform("modelMatrix", glm::translate(glm::mat4(), glm::vec3(0, 0, 0)));
 		m_texture->bind();
 		glBindVertexArray(m_vao);
+		m_simpleShader->setUniform("modelMatrix", glm::translate(glm::vec3(0, 0, 0)));
+		m_simpleShader->setUniform("normalMatrix", glm::mat3(1.0f));
+		glDrawElements(GL_TRIANGLES, m_numElements, GL_UNSIGNED_INT, nullptr);
+		glm::mat4 modelMatrix = glm::translate(glm::vec3(0.75f, 0.0f, 0.0f));
+		modelMatrix = glm::rotate(modelMatrix, glm::radians(90.0f), glm::vec3(1, 0, 0));
+		m_simpleShader->setUniform("modelMatrix", modelMatrix);
+		m_simpleShader->setUniform("normalMatrix", glm::inverseTranspose(glm::mat3(modelMatrix)));
 		glDrawElements(GL_TRIANGLES, m_numElements, GL_UNSIGNED_INT, nullptr);
 		glBindVertexArray(0);
 		glUseProgram(0);
