@@ -105,6 +105,9 @@ static const std::string simpleFragmentShader = R"(
 		vec3 normal = normalize(fs_in.normal);
 		vec3 texSample = textureBicubic(tex, fs_in.texCoord * vec2(2, 1)).rgb;
 		vec3 albedo = texSample;
+		albedo *= vec3(1.0, 0.02, 0.02);
+		//albedo *= vec3(170, 220, 50) / 255.0;
+		//albedo = vec3(0.1);
 
 		vec3 ambient = albedo * lightColor * 0.02;
 
@@ -133,123 +136,7 @@ namespace demo
 		m_simpleShader->use();
 		m_simpleShader->setUniform("projectionMatrix", m_projectionMatrix);
 		
-		struct Vertex
-		{
-			glm::vec3 position;
-			glm::vec2 texCoord;
-			glm::vec4 color;
-
-			Vertex(const glm::vec3& pos, const glm::vec2& tc, const glm::vec4& col)
-				: position(pos), texCoord(tc), color(col) { }
-		};
-		constexpr int segments = 128;
-		std::vector<Vertex> vertices;
-		vertices.reserve((segments + 1) * 4);
-		glm::vec4 color;
-		color.a = 0.0f;
-		//color.r = 142 / 255.0f;
-		//color.g = 41 / 255.0f;
-		//color.b = 109 / 255.0f;
-		//color.r = 0.0f;
-		//color.g = -1.0f;
-		//color.b = -2.0f;
-		std::srand((unsigned int)std::time(nullptr));
-		for (int i = 0; i < 4; i++)
-		{
-			if (i == 0)
-				vertices.emplace_back(glm::vec3(0.0f, 0.0f, 1.5f), glm::vec2(0.5f, 0.5f), glm::vec4(1.0f, 2.0f, 3.0f, 1.0f));
-			else if (i == 1)
-				vertices.emplace_back(glm::vec3(0.0f, 0.0f, -1.5f), glm::vec2(0.5f, 0.5f), glm::vec4(1.0f, 2.0f, 3.0f, 1.0f));
-			else if (i == 2)
-				vertices.emplace_back(glm::vec3(1.5f, 0.0f, 0.0f), glm::vec2(0.5f, 0.5f), glm::vec4(1.0f, 2.0f, 3.0f, 1.0f));
-			else if (i == 3)
-				vertices.emplace_back(glm::vec3(-1.5f, 0.0f, 0.0f), glm::vec2(0.5f, 0.5f), glm::vec4(1.0f, 2.0f, 3.0f, 1.0f));
-
-			for (int j = 0; j < segments; j++)
-			{
-				float angle = (float)j / segments * glm::two_pi<float>();
-
-				glm::vec3 position;
-				glm::vec2 texCoord;
-				if (i == 0)
-				{
-					position.x = glm::cos(angle);
-					position.y = glm::sin(angle);
-					position /= glm::max(glm::abs(position.x), glm::abs(position.y));
-					position.z = 1.0f;
-					texCoord = glm::vec2(position.x, position.y)* 0.5f + 0.5f;
-				}
-				else if (i == 1)
-				{
-					position.x = -glm::cos(angle);
-					position.y = glm::sin(angle);
-					position /= glm::max(glm::abs(position.x), glm::abs(position.y));
-					position.z = -1.0f;
-					texCoord = glm::vec2(position.x, position.y)* 0.5f + 0.5f;
-				}
-				else if (i == 2)
-				{
-					position.y = glm::sin(angle);
-					position.z = glm::cos(angle);
-					position /= glm::max(glm::abs(position.z), glm::abs(position.y));
-					position.x = 1.0f;
-					texCoord = glm::vec2(position.z, position.y)* 0.5f + 0.5f;
-				}
-				else if (i == 3)
-				{
-					position.y = glm::sin(angle);
-					position.z = -glm::cos(angle);
-					position /= glm::max(glm::abs(position.z), glm::abs(position.y));
-					position.x = -1.0f;
-					texCoord = glm::vec2(position.z, position.y)* 0.5f + 0.5f;
-				}
-
-				glm::vec4 color;
-				color.r = (std::rand() % 256) / 255.0f;
-				color.g = (std::rand() % 256) / 255.0f;
-				color.b = (std::rand() % 256) / 255.0f;
-				color.a = 0.0f;
-
-				vertices.emplace_back(position, texCoord, color);
-			}
-		}
-		std::vector<GLuint> indices;
-		indices.reserve(segments * 3 * 4);
-		for (int i = 0; i < 4; i++)
-		{
-			for (int j = 0; j < segments; j++)
-			{
-				indices.push_back((segments + 1) * i);
-				indices.push_back((segments + 1) * i + j + 1);
-				indices.push_back((segments + 1) * i + (j == segments - 1 ? 1 : j + 2));
-			}
-		}
-		m_numElements = indices.size();
-
-		//glGenBuffers(1, &m_vbo);
-		//glGenBuffers(1, &m_ebo);
-		//glGenVertexArrays(1, &m_vao);
-		//glBindVertexArray(m_vao);
-		//{
-		//	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-		//	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
-
-		//	glEnableVertexAttribArray(0);
-		//	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
-		//	glEnableVertexAttribArray(1);
-		//	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
-		//	glEnableVertexAttribArray(2);
-		//	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
-
-		//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
-		//	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * indices.size(), indices.data(), GL_STATIC_DRAW);
-		//}
-		//glBindVertexArray(0);
-		//glBindBuffer(GL_ARRAY_BUFFER, 0);
-		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
 		m_vao = plgn::MeshUtil::createTorus(0.75f, 0.25f, 128, 64, &m_numElements);
-		glPointSize(2);
 
 		unsigned int texSize = 32;
 		std::vector<unsigned char> pixels;
@@ -259,12 +146,10 @@ namespace demo
 			for (unsigned int x = 0; x < texSize; x++)
 			{
 				pixels.push_back((unsigned char)(((std::rand() % 256) * 75 / 100) + (256 * 25 / 100)));
-				pixels.push_back((unsigned char)(((std::rand() % 256) * 75 / 100) + (256 * 25 / 100)));
-				pixels.push_back((unsigned char)(((std::rand() % 256) * 75 / 100) + (256 * 25 / 100)));
-				//pixels.push_back(pixels.back());
-				//pixels.push_back(pixels.back());
-				//pixels.push_back((unsigned char)(std::rand() % 256));
-				//pixels.push_back((unsigned char)(std::rand() % 256));
+				//pixels.push_back((unsigned char)(((std::rand() % 256) * 75 / 100) + (256 * 25 / 100)));
+				//pixels.push_back((unsigned char)(((std::rand() % 256) * 75 / 100) + (256 * 25 / 100)));
+				pixels.push_back(pixels.back());
+				pixels.push_back(pixels.back());
 			}
 		}
 		m_texture = std::make_unique<plgn::Texture2D>(texSize, texSize, plgn::TextureFormat::RGB_8, pixels.data());
@@ -318,7 +203,7 @@ namespace demo
 	void DemoApplication::render()
 	{
 		glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
-		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 		glm::mat4 viewMatrix = glm::lookAt(m_viewPosition, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
