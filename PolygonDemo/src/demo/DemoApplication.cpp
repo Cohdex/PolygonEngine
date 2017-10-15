@@ -107,6 +107,8 @@ static const std::string simpleFragmentShader = R"(
 		vec3 albedo = texSample;
 		albedo *= vec3(1.0, 0.02, 0.02);
 		//albedo *= vec3(170, 220, 50) / 255.0;
+		//albedo *= vec3(0.02, 0.2, 0.8);
+		//albedo = mix(vec3(1.0, 0.02, 0.02), vec3(0.9, 0.5, 0.02), texSample.r);
 		//albedo = vec3(0.1);
 
 		vec3 ambient = albedo * lightColor * 0.02;
@@ -186,6 +188,9 @@ namespace demo
 		if (isKeyDown(GLFW_KEY_DOWN))
 			m_pitch -= rotSpeed;
 
+		m_yaw += (float)(getMouseScreenDX() * rotSpeed * 0.2);
+		m_pitch += (float)(getMouseScreenDY() * rotSpeed * 0.2);
+
 		m_pitch = glm::clamp(m_pitch, glm::radians(-89.0f), glm::radians(89.0f));
 
 		if (isKeyDown(GLFW_KEY_W))
@@ -205,12 +210,15 @@ namespace demo
 		glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 
 		glm::mat4 viewMatrix = glm::lookAt(m_viewPosition, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 		m_simpleShader->use();
 		m_simpleShader->setUniform("viewMatrix", viewMatrix);
 		m_simpleShader->setUniform("viewPosition", m_viewPosition);
+		m_simpleShader->setUniform("modelMatrix", glm::translate(glm::mat4(), glm::vec3(0, 0, 0)));
 		m_texture->bind();
 		glBindVertexArray(m_vao);
 		glDrawElements(GL_TRIANGLES, m_numElements, GL_UNSIGNED_INT, nullptr);

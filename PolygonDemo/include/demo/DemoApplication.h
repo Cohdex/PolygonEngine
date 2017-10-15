@@ -10,7 +10,7 @@ namespace demo
 		glm::mat4 m_projectionMatrix;
 		glm::vec3 m_viewPosition;
 		float m_pitch, m_yaw;
-		float m_distance = 1.0f;
+		float m_distance = 1.5f;
 
 		std::unique_ptr<plgn::Shader> m_simpleShader;
 		GLuint m_vao, m_vbo, m_ebo;

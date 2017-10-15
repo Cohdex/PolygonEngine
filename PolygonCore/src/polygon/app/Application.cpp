@@ -85,6 +85,12 @@ namespace plgn
 
 		glfwSetWindowSizeCallback(m_window, resizeCallback);
 		glfwSetKeyCallback(m_window, keyCallback);
+		glfwSetCursorPosCallback(m_window, cursorCallback);
+
+		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		double xPos, yPos;
+		glfwGetCursorPos(m_window, &xPos, &yPos);
+		cursorCallback(m_window, m_width / 2.0, m_height / 2.0);
 
 		std::cout << "OpenGL: " << glGetString(GL_VERSION) << std::endl;
 	}
@@ -100,6 +106,8 @@ namespace plgn
 			lastTime = time;
 
 			m_pressedKeys.clear();
+			m_mouseScreenDX = 0.0f;
+			m_mouseScreenDY = 0.0f;
 			glfwPollEvents();
 
 			if (glfwWindowShouldClose(m_window))
@@ -139,6 +147,18 @@ namespace plgn
 		{
 			app->m_pressedKeys.insert(key);
 		}
+	}
+
+	static void cursorCallback(GLFWwindow* window, double xPos, double yPos)
+	{
+		Application* app = (Application*)glfwGetWindowUserPointer(window);
+		float oldXPos = app->m_mouseScreenX;
+		float oldYPos = app->m_mouseScreenY;
+		app->m_mouseScreenX = (float)xPos;
+		app->m_mouseScreenY = (float)(app->m_height - yPos - 1.0);
+
+		app->m_mouseScreenDX = app->m_mouseScreenX - oldXPos;
+		app->m_mouseScreenDY = app->m_mouseScreenY - oldYPos;
 	}
 
 	bool Application::isKeyDown(int key) const
