@@ -7,23 +7,29 @@ static const std::string simpleVertexShader = R"(
 	#line 18
 
 	layout(location = 0) in vec3 in_position;
-	layout(location = 1) in vec2 in_texCoord;
-	layout(location = 2) in vec4 in_color;
+	layout(location = 1) in vec3 in_normal;
+	layout(location = 2) in vec2 in_texCoord;
 
 	out VS_OUT
 	{
+		vec3 position;
+		vec3 normal;
 		vec2 texCoord;
-		vec4 color;
 	} vs_out;
 
-	uniform mat4 projectionMatrix = mat4(1.0);
+	uniform mat4 modelMatrix = mat4(1.0);
+	uniform mat3 normalMatrix = mat3(1.0);
 	uniform mat4 viewMatrix = mat4(1.0);
+	uniform mat4 projectionMatrix = mat4(1.0);
 
 	void main()
 	{
-		gl_Position = projectionMatrix * viewMatrix * vec4(in_position, 1.0);
+		vec4 worldPos = modelMatrix * vec4(in_position, 1.0);
+		gl_Position = projectionMatrix * viewMatrix * worldPos;
+
+		vs_out.position = worldPos.xyz;
+		vs_out.normal = in_normal;
 		vs_out.texCoord = in_texCoord;
-		vs_out.color = in_color;
 	}
 )";
 
@@ -33,13 +39,21 @@ static const std::string simpleFragmentShader = R"(
 
 	in VS_OUT
 	{
+		vec3 position;
+		vec3 normal;
 		vec2 texCoord;
-		vec4 color;
 	} fs_in;
 
-	layout(location = 0) out vec4 fragColor;
+	layout(location = 0) out vec4 out_fragColor;
 
 	uniform sampler2D tex;
+
+	uniform vec3 viewPosition;
+
+	const vec3 directionalLight = normalize(vec3(-1, -2, -1));
+	const vec3 lightColor = vec3(1.0, 1.0, 1.0);
+
+	const float gamma = 2.2;
 
 	vec4 cubic(float v)
 	{
@@ -58,7 +72,6 @@ static const std::string simpleFragmentShader = R"(
 	   vec2 invTexSize = 1.0 / texSize;
 
 	   texCoords = texCoords * texSize - 0.5;
-
 
 		vec2 fxy = fract(texCoords);
 		texCoords -= fxy;
@@ -81,17 +94,28 @@ static const std::string simpleFragmentShader = R"(
 		float sx = s.x / (s.x + s.y);
 		float sy = s.z / (s.z + s.w);
 
-		return mix(
+		return pow(mix(
 			mix(sample3, sample2, sx),
 			mix(sample1, sample0, sx),
-			sy);
+			sy), vec4(gamma));
 	}
 
 	void main()
 	{
-		vec3 texSample = textureBicubic(tex, fs_in.texCoord).rgb;
-		vec3 color = texSample * fs_in.color.rgb;
-		fragColor = vec4(color, smoothstep(0.0, 1.0, fs_in.color.a));
+		vec3 normal = normalize(fs_in.normal);
+		vec3 texSample = textureBicubic(tex, fs_in.texCoord * vec2(2, 1)).rgb;
+		vec3 albedo = texSample;
+
+		vec3 ambient = albedo * lightColor * 0.02;
+
+		vec3 diffuse = albedo * lightColor * max(0.0, dot(normal, -directionalLight)) * 0.8;
+
+		vec3 viewDir = normalize(viewPosition - fs_in.position);
+		vec3 specular =	lightColor * pow(max(0.0, dot(viewDir, reflect(directionalLight, normal))), 16) * 1.0;
+
+		vec3 color = ambient + diffuse + specular;
+
+		out_fragColor = vec4(pow(color, vec3(1.0 / gamma)), 1.0);
 	}
 )";
 
@@ -104,8 +128,6 @@ namespace demo
 	void DemoApplication::init()
 	{
 		m_projectionMatrix = glm::perspective(glm::radians(90.0f), (float)getWidth() / getHeight(), 0.01f, 50.0f);
-
-		m_viewPosition.z = 1;
 
 		m_simpleShader = std::make_unique<plgn::Shader>(simpleVertexShader, simpleFragmentShader);
 		m_simpleShader->use();
@@ -135,13 +157,13 @@ namespace demo
 		for (int i = 0; i < 4; i++)
 		{
 			if (i == 0)
-				vertices.emplace_back(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.5f, 0.5f), glm::vec4(1.0f, 2.0f, 3.0f, 1.0f));
+				vertices.emplace_back(glm::vec3(0.0f, 0.0f, 1.5f), glm::vec2(0.5f, 0.5f), glm::vec4(1.0f, 2.0f, 3.0f, 1.0f));
 			else if (i == 1)
-				vertices.emplace_back(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.5f, 0.5f), glm::vec4(1.0f, 2.0f, 3.0f, 1.0f));
+				vertices.emplace_back(glm::vec3(0.0f, 0.0f, -1.5f), glm::vec2(0.5f, 0.5f), glm::vec4(1.0f, 2.0f, 3.0f, 1.0f));
 			else if (i == 2)
-				vertices.emplace_back(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(0.5f, 0.5f), glm::vec4(1.0f, 2.0f, 3.0f, 1.0f));
+				vertices.emplace_back(glm::vec3(1.5f, 0.0f, 0.0f), glm::vec2(0.5f, 0.5f), glm::vec4(1.0f, 2.0f, 3.0f, 1.0f));
 			else if (i == 3)
-				vertices.emplace_back(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(0.5f, 0.5f), glm::vec4(1.0f, 2.0f, 3.0f, 1.0f));
+				vertices.emplace_back(glm::vec3(-1.5f, 0.0f, 0.0f), glm::vec2(0.5f, 0.5f), glm::vec4(1.0f, 2.0f, 3.0f, 1.0f));
 
 			for (int j = 0; j < segments; j++)
 			{
@@ -204,27 +226,30 @@ namespace demo
 		}
 		m_numElements = indices.size();
 
-		glGenBuffers(1, &m_vbo);
-		glGenBuffers(1, &m_ebo);
-		glGenVertexArrays(1, &m_vao);
-		glBindVertexArray(m_vao);
-		{
-			glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+		//glGenBuffers(1, &m_vbo);
+		//glGenBuffers(1, &m_ebo);
+		//glGenVertexArrays(1, &m_vao);
+		//glBindVertexArray(m_vao);
+		//{
+		//	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+		//	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
 
-			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
-			glEnableVertexAttribArray(1);
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
-			glEnableVertexAttribArray(2);
-			glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
+		//	glEnableVertexAttribArray(0);
+		//	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
+		//	glEnableVertexAttribArray(1);
+		//	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
+		//	glEnableVertexAttribArray(2);
+		//	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
 
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * indices.size(), indices.data(), GL_STATIC_DRAW);
-		}
-		glBindVertexArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+		//	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * indices.size(), indices.data(), GL_STATIC_DRAW);
+		//}
+		//glBindVertexArray(0);
+		//glBindBuffer(GL_ARRAY_BUFFER, 0);
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		m_vao = plgn::MeshUtil::createTorus(0.75f, 0.25f, 128, 64, &m_numElements);
+		glPointSize(2);
 
 		unsigned int texSize = 32;
 		std::vector<unsigned char> pixels;
@@ -244,10 +269,13 @@ namespace demo
 		}
 		m_texture = std::make_unique<plgn::Texture2D>(texSize, texSize, plgn::TextureFormat::RGB_8, pixels.data());
 
-		//glEnable(GL_DEPTH_TEST);
+		glEnable(GL_DEPTH_TEST);
+
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
 
 		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glBlendFunc(GL_SRC_ALPHA, GL_ZERO);
 	}
 
 	void DemoApplication::update(double deltaTime)
@@ -258,39 +286,46 @@ namespace demo
 			return;
 		}
 
-		float rotSpeed = (float)glm::radians(90.0 * deltaTime);
+		float rotSpeed = (float)glm::radians(45.0 * deltaTime);
 		float moveSpeed = (float)(0.5 * deltaTime);
-		if (isKeyDown(GLFW_KEY_RIGHT))
-		{
-			m_rotation += rotSpeed;
-		}
-		if (isKeyDown(GLFW_KEY_LEFT))
-		{
-			m_rotation -= rotSpeed;
-		}
-		if (isKeyDown(GLFW_KEY_UP))
-		{
-			m_distance -= moveSpeed;
-		}
-		if (isKeyDown(GLFW_KEY_DOWN))
-		{
-			m_distance += moveSpeed;
-		}
 
-		m_viewPosition.x = (float)std::sin(m_rotation) * m_distance;
-		m_viewPosition.z = (float)std::cos(m_rotation) * m_distance;
+		if (isKeyDown(GLFW_KEY_LEFT_SHIFT) || isKeyDown(GLFW_KEY_RIGHT_SHIFT))
+			moveSpeed *= 3;
+
+		if (isKeyDown(GLFW_KEY_RIGHT))
+			m_yaw += rotSpeed;
+		if (isKeyDown(GLFW_KEY_LEFT))
+			m_yaw -= rotSpeed;
+		if (isKeyDown(GLFW_KEY_UP))
+			m_pitch += rotSpeed;
+		if (isKeyDown(GLFW_KEY_DOWN))
+			m_pitch -= rotSpeed;
+
+		m_pitch = glm::clamp(m_pitch, glm::radians(-89.0f), glm::radians(89.0f));
+
+		if (isKeyDown(GLFW_KEY_W))
+			m_distance -= moveSpeed;
+		if (isKeyDown(GLFW_KEY_S))
+			m_distance += moveSpeed;
+
+		m_distance = glm::max(m_distance, 0.01f);
+
+		m_viewPosition.x = glm::sin(m_yaw) * glm::cos(m_pitch) * m_distance;
+		m_viewPosition.z = glm::cos(m_yaw) * glm::cos(m_pitch) * m_distance;
+		m_viewPosition.y = glm::sin(m_pitch) * m_distance;
 	}
 
 	void DemoApplication::render()
 	{
-		//glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
+		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 		glm::mat4 viewMatrix = glm::lookAt(m_viewPosition, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 		m_simpleShader->use();
 		m_simpleShader->setUniform("viewMatrix", viewMatrix);
+		m_simpleShader->setUniform("viewPosition", m_viewPosition);
 		m_texture->bind();
 		glBindVertexArray(m_vao);
 		glDrawElements(GL_TRIANGLES, m_numElements, GL_UNSIGNED_INT, nullptr);
