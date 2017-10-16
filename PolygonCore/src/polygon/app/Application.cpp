@@ -65,7 +65,6 @@ namespace plgn
 			throw -1;
 		}
 
-		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 		glfwSetWindowUserPointer(m_window, this);
 		glfwMakeContextCurrent(m_window);
 		glfwSwapInterval(1);
@@ -91,7 +90,7 @@ namespace plgn
 		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		double xPos, yPos;
 		glfwGetCursorPos(m_window, &xPos, &yPos);
-		cursorCallback(m_window, m_width / 2.0, m_height / 2.0);
+		cursorCallback(m_window, xPos, yPos);
 
 		std::cout << "OpenGL: " << glGetString(GL_VERSION) << std::endl;
 	}

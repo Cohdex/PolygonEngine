@@ -116,7 +116,7 @@ static const std::string simpleFragmentShader = R"(
 		vec3 diffuse = albedo * lightColor * max(0.0, dot(normal, -directionalLight)) * 0.8;
 
 		vec3 viewDir = normalize(viewPosition - fs_in.position);
-		vec3 specular =	lightColor * pow(max(0.0, dot(viewDir, reflect(directionalLight, normal))), 16) * 1.0;
+		vec3 specular =	lightColor * pow(max(0.0, dot(viewDir, reflect(directionalLight, normal))), 64) * 1.0;
 
 		vec3 color = ambient + diffuse + specular;
 
