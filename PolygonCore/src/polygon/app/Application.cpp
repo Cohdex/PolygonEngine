@@ -86,6 +86,7 @@ namespace plgn
 		glfwSetWindowSizeCallback(m_window, resizeCallback);
 		glfwSetKeyCallback(m_window, keyCallback);
 		glfwSetCursorPosCallback(m_window, cursorCallback);
+		glfwSetScrollCallback(m_window, scrollCallback);
 
 		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		double xPos, yPos;
@@ -108,6 +109,8 @@ namespace plgn
 			m_pressedKeys.clear();
 			m_mouseScreenDX = 0.0f;
 			m_mouseScreenDY = 0.0f;
+			m_verticalScrollDelta = 0.0f;
+			m_horizontalScrollDelta = 0.0f;
 			glfwPollEvents();
 
 			if (glfwWindowShouldClose(m_window))
@@ -159,6 +162,13 @@ namespace plgn
 
 		app->m_mouseScreenDX = app->m_mouseScreenX - oldXPos;
 		app->m_mouseScreenDY = app->m_mouseScreenY - oldYPos;
+	}
+
+	static void scrollCallback(GLFWwindow* window, double xOffset, double yOffset)
+	{
+		Application* app = (Application*)glfwGetWindowUserPointer(window);
+		app->m_horizontalScrollDelta = (float)xOffset;
+		app->m_verticalScrollDelta = (float)yOffset;
 	}
 
 	bool Application::isKeyDown(int key) const

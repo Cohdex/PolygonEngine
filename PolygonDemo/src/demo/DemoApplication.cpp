@@ -198,6 +198,8 @@ namespace demo
 		if (isKeyDown(GLFW_KEY_S))
 			m_distance += moveSpeed;
 
+		m_distance -= getVerticalScrollDelta() * 0.1f;
+
 		m_distance = glm::max(m_distance, 0.01f);
 
 		m_viewPosition.x = glm::sin(m_yaw) * glm::cos(m_pitch) * m_distance;

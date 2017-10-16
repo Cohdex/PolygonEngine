@@ -10,6 +10,7 @@ namespace plgn
 		friend void resizeCallback(GLFWwindow* window, int width, int height);
 		friend void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 		friend void cursorCallback(GLFWwindow* window, double xPos, double yPos);
+		friend void scrollCallback(GLFWwindow* window, double xOffset, double yOffset);
 
 	private:
 		std::string m_title;
@@ -22,6 +23,8 @@ namespace plgn
 		float m_mouseScreenY;
 		float m_mouseScreenDX;
 		float m_mouseScreenDY;
+		float m_verticalScrollDelta;
+		float m_horizontalScrollDelta;
 
 		void createWindow(bool fullscreen);
 		void appLoop();
@@ -55,5 +58,7 @@ namespace plgn
 		float getMouseY() const { return m_mouseScreenY / m_height; }
 		float getMouseDX() const { return m_mouseScreenDX / m_width; }
 		float getMouseDY() const { return m_mouseScreenDY / m_height; }
+		float getVerticalScrollDelta() const { return m_verticalScrollDelta; }
+		float getHorizontalScrollDelta() const { return m_horizontalScrollDelta; }
 	};
 }
