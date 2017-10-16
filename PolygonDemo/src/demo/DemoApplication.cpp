@@ -126,7 +126,7 @@ static const std::string simpleFragmentShader = R"(
 
 namespace demo
 {
-	DemoApplication::DemoApplication() : Application("Demo Application", 1920, 1080)
+	DemoApplication::DemoApplication() : Application("Demo Application", 1280, 720)
 	{
 	}
 
@@ -147,9 +147,9 @@ namespace demo
 		{
 			for (unsigned int x = 0; x < texSize; x++)
 			{
-				pixels.push_back((unsigned char)(((std::rand() % 256) * 75 / 100) + (256 * 25 / 100)));
-				//pixels.push_back((unsigned char)(((std::rand() % 256) * 75 / 100) + (256 * 25 / 100)));
-				//pixels.push_back((unsigned char)(((std::rand() % 256) * 75 / 100) + (256 * 25 / 100)));
+				pixels.push_back((unsigned char)(((std::rand() % 256) * 75 / 100) + (255 * 25 / 100)));
+				//pixels.push_back((unsigned char)(((std::rand() % 256) * 75 / 100) + (255 * 25 / 100)));
+				//pixels.push_back((unsigned char)(((std::rand() % 256) * 75 / 100) + (255 * 25 / 100)));
 				pixels.push_back(pixels.back());
 				pixels.push_back(pixels.back());
 			}
