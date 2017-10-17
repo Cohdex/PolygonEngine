@@ -113,9 +113,9 @@ static const std::string simpleFragmentShader = R"(
 		//albedo = mix(vec3(1.0, 0.02, 0.02), vec3(0.9, 0.5, 0.02), texSample.r);
 		//albedo = vec3(0.1);
 
-		vec3 ambient = albedo * lightColor * 0.02;
+		vec3 ambient = albedo * lightColor * 0.02*0;
 
-		vec3 diffuse = albedo * lightColor * max(0.0, dot(normal, -directionalLight)) * 0.8;
+		vec3 diffuse = albedo * lightColor * max(0.0, dot(normal, -directionalLight)) * 0.8*0;
 
 		vec3 viewDir = normalize(viewPosition - fs_in.position);
 		vec3 specular =	lightColor * pow(max(0.0, dot(viewDir, reflect(directionalLight, normal))), 64) * 1.0;
@@ -123,6 +123,7 @@ static const std::string simpleFragmentShader = R"(
 		vec3 color = ambient + diffuse + specular;
 
 		out_fragColor = vec4(pow(color, vec3(1.0 / gamma)), 1.0);
+		out_fragColor = vec4(pow(vec3(pow(1.0 - dot(normalize(viewPosition - fs_in.position), normal), 12)), vec3(1.0 / gamma)), 1.0);
 	}
 )";
 
