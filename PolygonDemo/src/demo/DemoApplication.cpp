@@ -123,7 +123,8 @@ static const std::string simpleFragmentShader = R"(
 		vec3 color = ambient + diffuse + specular;
 
 		out_fragColor = vec4(pow(color, vec3(1.0 / gamma)), 1.0);
-		out_fragColor = vec4(pow(vec3(pow(1.0 - dot(normalize(viewPosition - fs_in.position), normal), 12)), vec3(1.0 / gamma)), 1.0);
+		out_fragColor = vec4(pow(vec3(pow(1.0 - dot(normalize(viewPosition - fs_in.position), normal), 8)), vec3(1.0 / gamma)), 1.0);
+		out_fragColor.rgb *= materialColor;
 	}
 )";
 
