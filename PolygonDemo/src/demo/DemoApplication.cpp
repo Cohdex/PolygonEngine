@@ -50,6 +50,8 @@ static const std::string simpleFragmentShader = R"(
 
 	uniform vec3 viewPosition;
 
+	uniform vec3 materialColor;
+
 	const vec3 directionalLight = normalize(vec3(-1, -2, -1));
 	const vec3 lightColor = vec3(1.0, 1.0, 1.0);
 
@@ -104,8 +106,8 @@ static const std::string simpleFragmentShader = R"(
 	{
 		vec3 normal = normalize(fs_in.normal);
 		vec3 texSample = textureBicubic(tex, fs_in.texCoord * vec2(2, 1)).rgb;
-		vec3 albedo = texSample;
-		albedo *= vec3(1.0, 0.02, 0.02);
+		vec3 albedo = texSample * materialColor;
+		//albedo *= vec3(1.0, 0.02, 0.02);
 		//albedo *= vec3(170, 220, 50) / 255.0;
 		//albedo *= vec3(0.02, 0.2, 0.8);
 		//albedo = mix(vec3(1.0, 0.02, 0.02), vec3(0.9, 0.5, 0.02), texSample.r);
@@ -224,11 +226,13 @@ namespace demo
 		glBindVertexArray(m_vao);
 		m_simpleShader->setUniform("modelMatrix", glm::translate(glm::vec3(0, 0, 0)));
 		m_simpleShader->setUniform("normalMatrix", glm::mat3(1.0f));
+		m_simpleShader->setUniform("materialColor", glm::vec3(1.0, 0.02, 0.02));
 		glDrawElements(GL_TRIANGLES, m_numElements, GL_UNSIGNED_INT, nullptr);
 		glm::mat4 modelMatrix = glm::translate(glm::vec3(0.75f, 0.0f, 0.0f));
 		modelMatrix = glm::rotate(modelMatrix, glm::radians(90.0f), glm::vec3(1, 0, 0));
 		m_simpleShader->setUniform("modelMatrix", modelMatrix);
 		m_simpleShader->setUniform("normalMatrix", glm::inverseTranspose(glm::mat3(modelMatrix)));
+		m_simpleShader->setUniform("materialColor", glm::vec3(0.02, 0.02, 1.0));
 		glDrawElements(GL_TRIANGLES, m_numElements, GL_UNSIGNED_INT, nullptr);
 		glBindVertexArray(0);
 		glUseProgram(0);
