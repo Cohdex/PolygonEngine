@@ -64,27 +64,40 @@ namespace plgn
 			{
 				glm::vec2 texCoord;
 				std::fscanf(file, "%f %f\n", &texCoord.s, &texCoord.t);
-				tempTexCoords.push_back(texCoord);
+				tempTexCoords.push_back(texCoord / 65.7549f);
 			}
 			else if (std::strcmp(lineHeader, "f") == 0)
 			{
-				unsigned int vi0[3], vi1[3], vi2[3];
-				std::fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n",
+				unsigned int vi0[3], vi1[3], vi2[3], vi3[3];
+				std::fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d\n",
 					&vi0[0], &vi0[1], &vi0[2],
 					&vi1[0], &vi1[1], &vi1[2],
-					&vi2[0], &vi2[1], &vi2[2]);
+					&vi2[0], &vi2[1], &vi2[2],
+					&vi3[0], &vi3[1], &vi3[2]);
 
-				Face f;
-				f.v0.pi = vi0[0] - 1;
-				f.v0.ni = vi0[1] - 1;
-				f.v0.ti = vi0[2] - 1;
-				f.v1.pi = vi1[0] - 1;
-				f.v1.ni = vi1[1] - 1;
-				f.v1.ti = vi1[2] - 1;
-				f.v2.pi = vi2[0] - 1;
-				f.v2.ni = vi2[1] - 1;
-				f.v2.ti = vi2[2] - 1;
-				tempFaces.push_back(f);
+				Face f0;
+				f0.v0.pi = vi0[0] - 1;
+				f0.v0.ni = vi0[1] - 1;
+				f0.v0.ti = vi0[2] - 1;
+				f0.v1.pi = vi1[0] - 1;
+				f0.v1.ni = vi1[1] - 1;
+				f0.v1.ti = vi1[2] - 1;
+				f0.v2.pi = vi2[0] - 1;
+				f0.v2.ni = vi2[1] - 1;
+				f0.v2.ti = vi2[2] - 1;
+				tempFaces.push_back(f0);
+
+				Face f1;
+				f1.v0.pi = vi2[0] - 1;
+				f1.v0.ni = vi2[1] - 1;
+				f1.v0.ti = vi2[2] - 1;
+				f1.v1.pi = vi3[0] - 1;
+				f1.v1.ni = vi3[1] - 1;
+				f1.v1.ti = vi3[2] - 1;
+				f1.v2.pi = vi0[0] - 1;
+				f1.v2.ni = vi0[1] - 1;
+				f1.v2.ti = vi0[2] - 1;
+				tempFaces.push_back(f1);
 			}
 		}
 
