@@ -47,10 +47,10 @@ static const std::string simpleFragmentShader = R"(
 	layout(location = 0) out vec4 out_fragColor;
 
 	uniform sampler2D tex;
+	uniform vec3 materialColor;
 
 	uniform vec3 viewPosition;
-
-	uniform vec3 materialColor;
+	uniform float t;
 
 	const vec3 directionalLight = normalize(vec3(-1, -2, -1));
 	const vec3 lightColor = vec3(1.0, 1.0, 1.0);
@@ -105,7 +105,7 @@ static const std::string simpleFragmentShader = R"(
 	void main()
 	{
 		vec3 normal = normalize(fs_in.normal);
-		vec3 texSample = textureBicubic(tex, fs_in.texCoord * vec2(2, 1)).rgb;
+		vec3 texSample = textureBicubic(tex, (fs_in.texCoord + t * 0.1) * vec2(2, 1)).rgb;
 		vec3 albedo = texSample * materialColor;
 		//albedo *= vec3(1.0, 0.02, 0.02);
 		//albedo *= vec3(170, 220, 50) / 255.0;
@@ -113,9 +113,9 @@ static const std::string simpleFragmentShader = R"(
 		//albedo = mix(vec3(1.0, 0.02, 0.02), vec3(0.9, 0.5, 0.02), texSample.r);
 		//albedo = vec3(0.1);
 
-		vec3 ambient = albedo * lightColor * 0.02*0;
+		vec3 ambient = albedo * lightColor * 0.02;
 
-		vec3 diffuse = albedo * lightColor * max(0.0, dot(normal, -directionalLight)) * 0.8*0;
+		vec3 diffuse = albedo * lightColor * max(0.0, dot(normal, -directionalLight)) * 0.8;
 
 		vec3 viewDir = normalize(viewPosition - fs_in.position);
 		vec3 specular =	lightColor * pow(max(0.0, dot(viewDir, reflect(directionalLight, normal))), 64) * 1.0;
@@ -123,8 +123,8 @@ static const std::string simpleFragmentShader = R"(
 		vec3 color = ambient + diffuse + specular;
 
 		out_fragColor = vec4(pow(color, vec3(1.0 / gamma)), 1.0);
-		out_fragColor = vec4(pow(vec3(pow(1.0 - dot(normalize(viewPosition - fs_in.position), normal), 8)), vec3(1.0 / gamma)), 1.0);
-		out_fragColor.rgb *= materialColor;
+		out_fragColor -= vec4(pow(vec3(pow(1.0 - dot(normalize(viewPosition - fs_in.position), normal), 8)), vec3(1.0 / gamma)), 0.0) * vec4(materialColor, 0.0);
+		//out_fragColor.rgb *= materialColor;
 	}
 )";
 
@@ -219,11 +219,13 @@ namespace demo
 		
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 
-		glm::mat4 viewMatrix = glm::lookAt(m_viewPosition, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::vec3 viewTarget(0.0f, 0.0f, 0.0f);
+		glm::mat4 viewMatrix = glm::lookAt(m_viewPosition, viewTarget, glm::vec3(0.0f, 1.0f, 0.0f));
 
 		m_simpleShader->use();
 		m_simpleShader->setUniform("viewMatrix", viewMatrix);
 		m_simpleShader->setUniform("viewPosition", m_viewPosition);
+		m_simpleShader->setUniform("t", (float)glfwGetTime());
 		m_texture->bind();
 		glBindVertexArray(m_vao);
 		m_simpleShader->setUniform("modelMatrix", glm::translate(glm::vec3(0, 0, 0)));
