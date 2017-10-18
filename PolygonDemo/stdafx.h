@@ -26,5 +26,6 @@
 #include <polygon/graphics/Shader.h>
 #include <polygon/graphics/texture/Texture2D.h>
 #include <polygon/util/MeshUtil.h>
+#include <polygon/util/ObjLoader.h>
 
 // Polygon Demo includes

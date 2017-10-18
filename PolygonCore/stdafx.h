@@ -8,8 +8,11 @@
 #define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
 
 // C++ standard lib includes
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <string>
+#include <vector>
+#include <unordered_map>
 
 // OpenGL lib includes
 #include <GL/glew.h>
@@ -24,3 +27,4 @@
 #include <polygon/graphics/texture/Texture.h>
 #include <polygon/graphics/texture/Texture2D.h>
 #include <polygon/util/MeshUtil.h>
+#include <polygon/util/ObjLoader.h>

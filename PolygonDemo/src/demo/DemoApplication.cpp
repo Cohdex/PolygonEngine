@@ -122,8 +122,10 @@ static const std::string simpleFragmentShader = R"(
 
 		vec3 color = ambient + diffuse + specular;
 
+		color += vec3(pow(1.0 - dot(normalize(viewPosition - fs_in.position), normal), 8)) * materialColor;
+
 		out_fragColor = vec4(pow(color, vec3(1.0 / gamma)), 1.0);
-		out_fragColor -= vec4(pow(vec3(pow(1.0 - dot(normalize(viewPosition - fs_in.position), normal), 8)), vec3(1.0 / gamma)), 0.0) * vec4(materialColor, 0.0);
+		//out_fragColor += vec4(pow(vec3(pow(1.0 - dot(normalize(viewPosition - fs_in.position), normal), 8)), vec3(1.0 / gamma)), 0.0) * vec4(materialColor, 0.0);
 		//out_fragColor.rgb *= materialColor;
 	}
 )";
@@ -142,7 +144,8 @@ namespace demo
 		m_simpleShader->use();
 		m_simpleShader->setUniform("projectionMatrix", m_projectionMatrix);
 		
-		m_vao = plgn::MeshUtil::createTorus(0.75f, 0.25f, 128, 64, &m_numElements);
+		//m_vao = plgn::MeshUtil::createTorus(0.75f, 0.25f, 128, 64, &m_numElements);
+		m_vao = plgn::ObjLoader::load("../teapot.obj", &m_numElements);
 
 		unsigned int texSize = 32;
 		std::vector<unsigned char> pixels;
@@ -217,7 +220,7 @@ namespace demo
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 		
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 		glm::vec3 viewTarget(0.0f, 0.0f, 0.0f);
 		glm::mat4 viewMatrix = glm::lookAt(m_viewPosition, viewTarget, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -228,16 +231,26 @@ namespace demo
 		m_simpleShader->setUniform("t", (float)glfwGetTime());
 		m_texture->bind();
 		glBindVertexArray(m_vao);
-		m_simpleShader->setUniform("modelMatrix", glm::translate(glm::vec3(0, 0, 0)));
-		m_simpleShader->setUniform("normalMatrix", glm::mat3(1.0f));
-		m_simpleShader->setUniform("materialColor", glm::vec3(1.0, 0.02, 0.02));
-		glDrawElements(GL_TRIANGLES, m_numElements, GL_UNSIGNED_INT, nullptr);
-		glm::mat4 modelMatrix = glm::translate(glm::vec3(0.75f, 0.0f, 0.0f));
-		modelMatrix = glm::rotate(modelMatrix, glm::radians(90.0f), glm::vec3(1, 0, 0));
+		
+		glm::mat4 modelMatrix = glm::rotate(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.05f));
 		m_simpleShader->setUniform("modelMatrix", modelMatrix);
 		m_simpleShader->setUniform("normalMatrix", glm::inverseTranspose(glm::mat3(modelMatrix)));
-		m_simpleShader->setUniform("materialColor", glm::vec3(0.02, 0.02, 1.0));
+		m_simpleShader->setUniform("materialColor", glm::vec3(1.0, 0.02, 0.02));
 		glDrawElements(GL_TRIANGLES, m_numElements, GL_UNSIGNED_INT, nullptr);
+
+		//m_simpleShader->setUniform("modelMatrix", glm::translate(glm::vec3(0, 0, 0)));
+		//m_simpleShader->setUniform("normalMatrix", glm::mat3(1.0f));
+		//m_simpleShader->setUniform("materialColor", glm::vec3(1.0, 0.02, 0.02));
+		//glDrawElements(GL_TRIANGLES, m_numElements, GL_UNSIGNED_INT, nullptr);
+
+		//glm::mat4 modelMatrix = glm::translate(glm::vec3(0.75f, 0.0f, 0.0f));
+		//modelMatrix = glm::rotate(modelMatrix, glm::radians(90.0f), glm::vec3(1, 0, 0));
+		//m_simpleShader->setUniform("modelMatrix", modelMatrix);
+		//m_simpleShader->setUniform("normalMatrix", glm::inverseTranspose(glm::mat3(modelMatrix)));
+		//m_simpleShader->setUniform("materialColor", glm::vec3(0.02, 0.02, 1.0));
+		//glDrawElements(GL_TRIANGLES, m_numElements, GL_UNSIGNED_INT, nullptr);
+
 		glBindVertexArray(0);
 		glUseProgram(0);
 	}
