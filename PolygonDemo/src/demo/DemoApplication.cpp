@@ -155,8 +155,6 @@ namespace demo
 			for (unsigned int x = 0; x < texSize; x++)
 			{
 				pixels.push_back((unsigned char)(((std::rand() % 256) * 75 / 100) + (255 * 25 / 100)));
-				//pixels.push_back((unsigned char)(((std::rand() % 256) * 75 / 100) + (255 * 25 / 100)));
-				//pixels.push_back((unsigned char)(((std::rand() % 256) * 75 / 100) + (255 * 25 / 100)));
 				pixels.push_back(pixels.back());
 				pixels.push_back(pixels.back());
 			}
@@ -251,6 +249,7 @@ namespace demo
 		//glDrawElements(GL_TRIANGLES, m_numElements, GL_UNSIGNED_INT, nullptr);
 
 		glBindVertexArray(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
 		glUseProgram(0);
 	}
 
