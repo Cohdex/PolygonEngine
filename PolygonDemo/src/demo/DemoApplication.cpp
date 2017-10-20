@@ -232,10 +232,9 @@ namespace demo
 		m_texture->bind();
 		glBindVertexArray(m_vao);
 		
-		glm::mat4 modelMatrix = glm::rotate(glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.05f));
+		glm::mat4 modelMatrix = glm::scale(glm::vec3(0.1f));
 		m_simpleShader->setUniform("modelMatrix", modelMatrix);
-		m_simpleShader->setUniform("normalMatrix", glm::inverseTranspose(glm::mat3(modelMatrix)));
+		m_simpleShader->setUniform("normalMatrix", glm::mat3(1.0f));
 		m_simpleShader->setUniform("materialColor", glm::vec3(0.05, 1.0, 0.2));
 		glDrawElements(GL_TRIANGLES, m_numElements, GL_UNSIGNED_INT, nullptr);
 
