@@ -70,9 +70,9 @@ namespace plgn
 			{
 				unsigned int vi0[3], vi1[3], vi2[3];
 				std::fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n",
-					&vi0[0], &vi0[1], &vi0[2],
-					&vi1[0], &vi1[1], &vi1[2],
-					&vi2[0], &vi2[1], &vi2[2]);
+					&vi0[0], &vi0[2], &vi0[1],
+					&vi1[0], &vi1[2], &vi1[1],
+					&vi2[0], &vi2[2], &vi2[1]);
 
 				Face f;
 				f.v0.pi = vi0[0] - 1;

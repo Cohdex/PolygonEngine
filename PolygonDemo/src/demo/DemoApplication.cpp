@@ -122,7 +122,7 @@ static const std::string simpleFragmentShader = R"(
 
 		vec3 color = ambient + diffuse + specular;
 
-		color += vec3(pow(1.0 - max(0.0, dot(normalize(viewPosition - fs_in.position), normal)), 8)) * materialColor;
+		color = vec3(pow(1.0 - max(0.0, dot(normalize(viewPosition - fs_in.position), normal)), 8)) * materialColor;
 
 		out_fragColor = vec4(pow(color, vec3(1.0 / gamma)), 1.0);
 		//out_fragColor += vec4(pow(vec3(pow(1.0 - dot(normalize(viewPosition - fs_in.position), normal), 8)), vec3(1.0 / gamma)), 0.0) * vec4(materialColor, 0.0);
@@ -145,7 +145,7 @@ namespace demo
 		m_simpleShader->setUniform("projectionMatrix", m_projectionMatrix);
 		
 		//m_vao = plgn::MeshUtil::createTorus(0.75f, 0.25f, 128, 64, &m_numElements);
-		m_vao = plgn::ObjLoader::load("../teapot.obj", &m_numElements);
+		m_vao = plgn::ObjLoader::load("../PolygonDemo/Resources/teapot.obj", &m_numElements);
 
 		unsigned int texSize = 32;
 		std::vector<unsigned char> pixels;
@@ -236,7 +236,7 @@ namespace demo
 		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.05f));
 		m_simpleShader->setUniform("modelMatrix", modelMatrix);
 		m_simpleShader->setUniform("normalMatrix", glm::inverseTranspose(glm::mat3(modelMatrix)));
-		m_simpleShader->setUniform("materialColor", glm::vec3(1.0, 0.02, 0.02));
+		m_simpleShader->setUniform("materialColor", glm::vec3(0.02, 1.0, 0.2));
 		glDrawElements(GL_TRIANGLES, m_numElements, GL_UNSIGNED_INT, nullptr);
 
 		//m_simpleShader->setUniform("modelMatrix", glm::translate(glm::vec3(0, 0, 0)));
