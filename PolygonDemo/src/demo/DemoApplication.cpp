@@ -236,7 +236,7 @@ namespace demo
 		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.05f));
 		m_simpleShader->setUniform("modelMatrix", modelMatrix);
 		m_simpleShader->setUniform("normalMatrix", glm::inverseTranspose(glm::mat3(modelMatrix)));
-		m_simpleShader->setUniform("materialColor", glm::vec3(0.02, 1.0, 0.2));
+		m_simpleShader->setUniform("materialColor", glm::vec3(0.05, 1.0, 0.2));
 		glDrawElements(GL_TRIANGLES, m_numElements, GL_UNSIGNED_INT, nullptr);
 
 		//m_simpleShader->setUniform("modelMatrix", glm::translate(glm::vec3(0, 0, 0)));
