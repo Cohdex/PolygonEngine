@@ -104,7 +104,7 @@ static const std::string simpleFragmentShader = R"(
 
 	void main()
 	{
-		vec3 normal = normalize(fs_in.normal);
+		vec3 normal = normalize(gl_FrontFacing ? fs_in.normal : -fs_in.normal);
 		vec3 texSample = textureBicubic(tex, (fs_in.texCoord + t * 0.1) * vec2(2, 1)).rgb;
 		vec3 albedo = texSample * materialColor;
 		//albedo *= vec3(1.0, 0.02, 0.02);
@@ -145,8 +145,8 @@ namespace demo
 		m_simpleShader->setUniform("projectionMatrix", m_projectionMatrix);
 		
 		//m_vao = plgn::MeshUtil::createTorus(0.75f, 0.25f, 128, 64, &m_numElements);
-		m_vao = plgn::ObjLoader::load("../PolygonDemo/Resources/teapot.obj", &m_numElements);
-
+		m_vao = plgn::ObjLoader::load(RES_PATH "teapot.obj", &m_numElements);
+		
 		unsigned int texSize = 32;
 		std::vector<unsigned char> pixels;
 		pixels.reserve(texSize * texSize * 3);
@@ -163,7 +163,7 @@ namespace demo
 
 		glEnable(GL_DEPTH_TEST);
 
-		glEnable(GL_CULL_FACE);
+		//glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 
 		glEnable(GL_BLEND);
