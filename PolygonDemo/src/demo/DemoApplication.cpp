@@ -122,7 +122,7 @@ static const std::string simpleFragmentShader = R"(
 
 		vec3 color = ambient + diffuse + specular;
 
-		color = vec3(pow(1.0 - max(0.0, dot(normalize(viewPosition - fs_in.position), normal)), 8)) * materialColor;
+		color *= vec3(pow(1.0 - max(0.0, dot(normalize(viewPosition - fs_in.position), normal)), 8)) * materialColor;
 
 		out_fragColor = vec4(pow(color, vec3(1.0 / gamma)), 1.0);
 		//out_fragColor += vec4(pow(vec3(pow(1.0 - dot(normalize(viewPosition - fs_in.position), normal), 8)), vec3(1.0 / gamma)), 0.0) * vec4(materialColor, 0.0);
@@ -214,12 +214,10 @@ namespace demo
 
 	void DemoApplication::render()
 	{
-		glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
+		//glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 		
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
 		glm::vec3 viewTarget(0.0f, 0.0f, 0.0f);
 		glm::mat4 viewMatrix = glm::lookAt(m_viewPosition, viewTarget, glm::vec3(0.0f, 1.0f, 0.0f));
 
