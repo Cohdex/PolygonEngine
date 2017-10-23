@@ -167,9 +167,6 @@
       <Project>{e8bd1ce5-5a4d-4a5d-bc74-a522083d499d}</Project>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Object Include="Resources\f16.obj" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -33,7 +33,4 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <Object Include="Resources\f16.obj" />
-  </ItemGroup>
 </Project>
