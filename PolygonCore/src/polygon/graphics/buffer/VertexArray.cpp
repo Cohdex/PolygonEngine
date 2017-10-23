@@ -2,6 +2,12 @@
 
 namespace plgn
 {
+	VertexArray::VertexArray(GLsizei count)
+		: m_count(count)
+	{
+		glGenVertexArrays(1, &m_vaoId);
+	}
+
 	VertexArray::~VertexArray()
 	{
 		for (VertexBuffer* buffer : m_vertexBuffers)
@@ -11,12 +17,12 @@ namespace plgn
 		m_vertexBuffers.clear();
 	}
 
-	void VertexArray::attachVertexBuffer(VertexBuffer* buffer, GLuint attributeIndex)
+	void VertexArray::addVertexBuffer(VertexBuffer* buffer, GLuint attributeIndex)
 	{
 		glBindVertexArray(m_vaoId);
 		glBindBuffer(GL_ARRAY_BUFFER, buffer->getHandle());
 		glEnableVertexAttribArray(attributeIndex);
-		glVertexAttribPointer(attributeIndex, buffer->getStride() * buffer->getCount(), GL_FLOAT, GL_FALSE, buffer->getStride(), (void*)0);
+		glVertexAttribPointer(attributeIndex, buffer->getStride(), GL_FLOAT, GL_FALSE, buffer->getStride() * sizeof(GLfloat), (void*)0);
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -38,11 +44,11 @@ namespace plgn
 		glBindVertexArray(m_vaoId);
 		if (m_indexBuffer == nullptr)
 		{
-			glDrawArrays(GL_TRIANGLES, 0, m_elementCount);
+			glDrawArrays(GL_TRIANGLES, 0, m_count);
 		}
 		else
 		{
-			glDrawElements(GL_TRIANGLES, m_elementCount, GL_UNSIGNED_INT, nullptr);
+			glDrawElements(GL_TRIANGLES, m_count, GL_UNSIGNED_INT, nullptr);
 		}
 		glBindVertexArray(0);
 	}

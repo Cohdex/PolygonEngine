@@ -13,8 +13,9 @@ namespace demo
 		float m_distance = 1.5f;
 
 		std::unique_ptr<plgn::Shader> m_simpleShader;
-		GLuint m_vao, m_vbo, m_ebo;
-		int m_numElements;
+		//GLuint m_vao, m_vbo, m_ebo;
+		//int m_numElements;
+		std::unique_ptr<plgn::VertexArray> m_vao;
 		std::unique_ptr<plgn::Texture2D> m_texture;
 
 	public:

@@ -144,8 +144,8 @@ namespace demo
 		m_simpleShader->use();
 		m_simpleShader->setUniform("projectionMatrix", m_projectionMatrix);
 		
-		//m_vao = plgn::MeshUtil::createTorus(0.75f, 0.25f, 128, 64, &m_numElements);
-		m_vao = plgn::ObjLoader::load(RES_PATH "teapot.obj", &m_numElements);
+		m_vao.reset(plgn::MeshUtil::createTorus(0.75f, 0.25f, 128, 64));
+		//m_vao = plgn::ObjLoader::load(RES_PATH "teapot.obj", &m_numElements);
 		
 		unsigned int texSize = 32;
 		std::vector<unsigned char> pixels;
@@ -226,7 +226,7 @@ namespace demo
 		m_simpleShader->setUniform("viewPosition", m_viewPosition);
 		m_simpleShader->setUniform("t", (float)glfwGetTime());
 		m_texture->bind();
-		glBindVertexArray(m_vao);
+		//glBindVertexArray(m_vao);
 		
 		glm::mat4 modelMatrix = glm::translate(glm::vec3(0, -0.25f, 0));
 		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.1f));
@@ -234,7 +234,8 @@ namespace demo
 		m_simpleShader->setUniform("normalMatrix", glm::mat3(1.0f));
 		m_simpleShader->setUniform("materialColor", glm::vec3(0.05, 1.0, 0.2));
 		m_simpleShader->setUniform("materialColor", glm::vec3(30, 100, 255) / 255.0f);
-		glDrawElements(GL_TRIANGLES, m_numElements, GL_UNSIGNED_INT, nullptr);
+		//glDrawElements(GL_TRIANGLES, m_numElements, GL_UNSIGNED_INT, nullptr);
+		m_vao->draw();
 
 		//m_simpleShader->setUniform("modelMatrix", glm::translate(glm::vec3(0, 0, 0)));
 		//m_simpleShader->setUniform("normalMatrix", glm::mat3(1.0f));
@@ -248,7 +249,7 @@ namespace demo
 		//m_simpleShader->setUniform("materialColor", glm::vec3(0.02, 0.02, 1.0));
 		//glDrawElements(GL_TRIANGLES, m_numElements, GL_UNSIGNED_INT, nullptr);
 
-		glBindVertexArray(0);
+		//glBindVertexArray(0);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glUseProgram(0);
 	}
@@ -256,13 +257,15 @@ namespace demo
 	void DemoApplication::dispose()
 	{
 		m_simpleShader->destroy();
-		m_simpleShader.reset();
+		m_simpleShader = nullptr;
 
-		glDeleteVertexArrays(1, &m_vao); m_vao = 0;
-		glDeleteBuffers(1, &m_vbo); m_vbo = 0;
-		glDeleteBuffers(1, &m_ebo); m_ebo = 0;
+		//glDeleteVertexArrays(1, &m_vao); m_vao = 0;
+		//glDeleteBuffers(1, &m_vbo); m_vbo = 0;
+		//glDeleteBuffers(1, &m_ebo); m_ebo = 0;
+		m_vao->destroy();
+		m_vao = nullptr;
 
 		m_texture->destroy();
-		m_texture.reset();
+		m_texture = nullptr;
 	}
 }

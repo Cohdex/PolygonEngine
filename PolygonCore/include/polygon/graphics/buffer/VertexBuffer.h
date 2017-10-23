@@ -12,8 +12,8 @@ namespace plgn
 	{
 	private:
 		GLuint m_vboId;
-		GLint m_count;
-		GLint m_elementSize;
+		GLint m_size;
+		GLint m_stride;
 
 		void init(const GLfloat* data);
 
@@ -27,9 +27,8 @@ namespace plgn
 		VertexBuffer operator=(const VertexBuffer&) = delete;
 
 		inline GLuint getHandle() const { return m_vboId; }
-		inline GLint getCount() const { return m_count; }
-		inline GLint getElementSize() const { return m_elementSize; }
-		inline GLint getStride() const { return m_elementSize * sizeof(GLfloat); }
+		inline GLint getSize() const { return m_size; }
+		inline GLint getStride() const { return m_stride; }
 
 		void destroy();
 	};

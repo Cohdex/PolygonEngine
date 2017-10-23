@@ -15,15 +15,13 @@ namespace plgn
 	private:
 		GLuint m_vaoId;
 
-		GLsizei m_elementCount;
+		GLsizei m_count;
 
 		std::vector<VertexBuffer*> m_vertexBuffers;
 		std::unique_ptr<IndexBuffer> m_indexBuffer;
 
 	public:
-		inline VertexArray(GLsizei elementCount) : m_elementCount(elementCount)
-		{
-		}
+		VertexArray(GLsizei count);
 
 		~VertexArray();
 
@@ -31,9 +29,9 @@ namespace plgn
 		VertexArray& operator=(const VertexArray&) = delete;
 
 		inline GLuint getHandle() const { return m_vaoId; };
-		inline GLsizei getElementCount() const { return m_elementCount; }
+		inline GLsizei getCount() const { return m_count; }
 
-		void attachVertexBuffer(VertexBuffer* buffer, GLuint attributeIndex);
+		void addVertexBuffer(VertexBuffer* buffer, GLuint attributeIndex);
 		void setIndexBuffer(IndexBuffer* buffer);
 
 		void draw() const;

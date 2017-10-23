@@ -2,6 +2,8 @@
 
 #include <GL/glew.h>
 
+#include "../graphics/buffer/VertexArray.h"
+
 namespace plgn
 {
 	class MeshUtil
@@ -12,6 +14,6 @@ namespace plgn
 		MeshUtil& operator=(const MeshUtil&) = delete;
 
 	public:
-		static GLuint createTorus(float centerRadius, float outerRadius, int rings, int segments, int* numElements);
+		static VertexArray* createTorus(float centerRadius, float outerRadius, int rings, int segments);
 	};
 }
