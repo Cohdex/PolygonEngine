@@ -13,7 +13,7 @@ namespace plgn
 	{
 		try
 		{
-			createWindow(true);
+			createWindow(false);
 			init();
 			appLoop();
 		}

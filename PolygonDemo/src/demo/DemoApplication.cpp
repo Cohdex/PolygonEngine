@@ -122,7 +122,7 @@ static const std::string simpleFragmentShader = R"(
 
 		vec3 color = ambient + diffuse + specular;
 
-		color *= vec3(pow(1.0 - max(0.0, dot(normalize(viewPosition - fs_in.position), normal)), 8)) * materialColor;
+		color = vec3(pow(1.0 - max(0.0, dot(normalize(viewPosition - fs_in.position), normal)), 8)) * materialColor;
 
 		out_fragColor = vec4(pow(color, vec3(1.0 / gamma)), 1.0);
 		//out_fragColor += vec4(pow(vec3(pow(1.0 - dot(normalize(viewPosition - fs_in.position), normal), 8)), vec3(1.0 / gamma)), 0.0) * vec4(materialColor, 0.0);
@@ -228,10 +228,12 @@ namespace demo
 		m_texture->bind();
 		glBindVertexArray(m_vao);
 		
-		glm::mat4 modelMatrix = glm::scale(glm::vec3(0.1f));
+		glm::mat4 modelMatrix = glm::translate(glm::vec3(0, -0.25f, 0));
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.1f));
 		m_simpleShader->setUniform("modelMatrix", modelMatrix);
 		m_simpleShader->setUniform("normalMatrix", glm::mat3(1.0f));
 		m_simpleShader->setUniform("materialColor", glm::vec3(0.05, 1.0, 0.2));
+		m_simpleShader->setUniform("materialColor", glm::vec3(30, 100, 255) / 255.0f);
 		glDrawElements(GL_TRIANGLES, m_numElements, GL_UNSIGNED_INT, nullptr);
 
 		//m_simpleShader->setUniform("modelMatrix", glm::translate(glm::vec3(0, 0, 0)));
