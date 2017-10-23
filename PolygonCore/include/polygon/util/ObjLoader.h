@@ -2,6 +2,8 @@
 
 #include <GL/glew.h>
 
+#include "../graphics/buffer/VertexArray.h"
+
 namespace plgn
 {
 	class ObjLoader
@@ -11,6 +13,6 @@ namespace plgn
 		ObjLoader(const ObjLoader&) = delete;
 		ObjLoader& operator=(const ObjLoader&) = delete;
 
-		static GLuint load(const char* filename, int* numElements);
+		static VertexArray* load(const char* filename);
 	};
 }

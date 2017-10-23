@@ -2,7 +2,7 @@
 
 namespace plgn
 {
-	GLuint ObjLoader::load(const char* filename, int* numElements)
+	VertexArray* ObjLoader::load(const char* filename)
 	{
 		std::FILE* file = std::fopen(filename, "r");
 		if (file == nullptr)
@@ -90,14 +90,9 @@ namespace plgn
 
 		std::fclose(file);
 
-		struct Vertex
-		{
-			glm::vec3 position;
-			glm::vec3 normal;
-			glm::vec2 texCoord;
-		};
-
-		std::vector<Vertex> vertices;
+		std::vector<glm::vec3> positions;
+		std::vector<glm::vec3> normals;
+		std::vector<glm::vec2> texCoords;
 		std::vector<GLuint> indices;
 
 		std::unordered_map<VertexIndex, GLuint, VertexIndexHasher> indexCache;
@@ -109,12 +104,12 @@ namespace plgn
 				indices.push_back(v0->second);
 			else
 			{
-				GLuint index = vertices.size();
-				Vertex vert;
-				vert.position = tempPositions[f.v0.pi];
-				vert.normal = tempNormals[f.v0.ni];
-				vert.texCoord = tempTexCoords[f.v0.ti];
-				vertices.push_back(vert);
+				GLuint index = positions.size();
+
+				positions.push_back(tempPositions[f.v0.pi]);
+				normals.push_back(tempNormals[f.v0.ni]);
+				texCoords.push_back(tempTexCoords[f.v0.ti]);
+
 				indices.push_back(index);
 				indexCache[f.v0] = index;
 			}
@@ -124,12 +119,12 @@ namespace plgn
 				indices.push_back(v1->second);
 			else
 			{
-				GLuint index = vertices.size();
-				Vertex vert;
-				vert.position = tempPositions[f.v1.pi];
-				vert.normal = tempNormals[f.v1.ni];
-				vert.texCoord = tempTexCoords[f.v1.ti];
-				vertices.push_back(vert);
+				GLuint index = positions.size();
+
+				positions.push_back(tempPositions[f.v1.pi]);
+				normals.push_back(tempNormals[f.v1.ni]);
+				texCoords.push_back(tempTexCoords[f.v1.ti]);
+
 				indices.push_back(index);
 				indexCache[f.v1] = index;
 			}
@@ -139,41 +134,22 @@ namespace plgn
 				indices.push_back(v2->second);
 			else
 			{
-				GLuint index = vertices.size();
-				Vertex vert;
-				vert.position = tempPositions[f.v2.pi];
-				vert.normal = tempNormals[f.v2.ni];
-				vert.texCoord = tempTexCoords[f.v2.ti];
-				vertices.push_back(vert);
+				GLuint index = positions.size();
+
+				positions.push_back(tempPositions[f.v2.pi]);
+				normals.push_back(tempNormals[f.v2.ni]);
+				texCoords.push_back(tempTexCoords[f.v2.ti]);
+
 				indices.push_back(index);
 				indexCache[f.v2] = index;
 			}
 		}
 
-		*numElements = indices.size();
-
-		GLuint vbo, ebo, vao;
-		glGenBuffers(1, &vbo);
-		glGenBuffers(1, &ebo);
-		glGenVertexArrays(1, &vao);
-		glBindVertexArray(vao);
-		{
-			glBindBuffer(GL_ARRAY_BUFFER, vbo);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
-
-			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
-			glEnableVertexAttribArray(1);
-			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
-			glEnableVertexAttribArray(2);
-			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
-
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * indices.size(), indices.data(), GL_STATIC_DRAW);
-		}
-		glBindVertexArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		VertexArray* vao = new VertexArray(indices.size());
+		vao->setIndexBuffer(new IndexBuffer(indices));
+		vao->addVertexBuffer(new VertexBuffer(positions), 0);
+		vao->addVertexBuffer(new VertexBuffer(normals), 1);
+		vao->addVertexBuffer(new VertexBuffer(texCoords), 2);
 
 		return vao;
 	}
