@@ -113,7 +113,7 @@ static const std::string simpleFragmentShader = R"(
 		//albedo = mix(vec3(1.0, 0.02, 0.02), vec3(0.9, 0.5, 0.02), texSample.r);
 		//albedo = vec3(0.1);
 
-		vec3 ambient = albedo * lightColor * 0.02;
+		vec3 ambient = albedo * lightColor * 0.01;
 
 		vec3 diffuse = albedo * lightColor * max(0.0, dot(normal, -directionalLight)) * 0.8;
 
@@ -122,11 +122,9 @@ static const std::string simpleFragmentShader = R"(
 
 		vec3 color = ambient + diffuse + specular;
 
-		color = vec3(pow(1.0 - max(0.0, dot(normalize(viewPosition - fs_in.position), normal)), 8)) * materialColor;
+		color += vec3(pow(1.0 - max(0.0, dot(normalize(viewPosition - fs_in.position), normal)), 8));// * materialColor;
 
 		out_fragColor = vec4(pow(color, vec3(1.0 / gamma)), 1.0);
-		//out_fragColor += vec4(pow(vec3(pow(1.0 - dot(normalize(viewPosition - fs_in.position), normal), 8)), vec3(1.0 / gamma)), 0.0) * vec4(materialColor, 0.0);
-		//out_fragColor.rgb *= materialColor;
 	}
 )";
 
@@ -145,7 +143,8 @@ namespace demo
 		m_simpleShader->setUniform("projectionMatrix", m_projectionMatrix);
 		
 		m_torusMesh.reset(plgn::MeshUtil::createTorus(0.75f, 0.25f, 128, 64));
-		m_modelMesh.reset(plgn::ObjLoader::load(RES_PATH "teapot.obj"));
+		m_teapotMesh.reset(plgn::ObjLoader::load(RES_PATH "teapot.obj"));
+		m_airplaneMesh.reset(plgn::ObjLoader::load(RES_PATH "f16.obj"));
 		
 		unsigned int texSize = 32;
 		std::vector<unsigned char> pixels;
@@ -214,8 +213,9 @@ namespace demo
 
 	void DemoApplication::render()
 	{
-		//glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
+		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		//glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 		
 		glm::vec3 viewTarget(0.0f, 0.0f, 0.0f);
@@ -234,7 +234,14 @@ namespace demo
 		m_simpleShader->setUniform("normalMatrix", glm::mat3(1.0f));
 		m_simpleShader->setUniform("materialColor", glm::vec3(0.05, 1.0, 0.2));
 		m_simpleShader->setUniform("materialColor", glm::vec3(30, 100, 255) / 255.0f);
-		m_modelMesh->draw();
+		m_teapotMesh->draw();
+
+		modelMatrix = glm::translate(glm::vec3(-1, 0, 1.5f));
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(2));
+		m_simpleShader->setUniform("modelMatrix", modelMatrix);
+		m_simpleShader->setUniform("normalMatrix", glm::mat3(1.0f));
+		m_simpleShader->setUniform("materialColor", glm::vec3(0.05, 1.0, 0.2));
+		m_airplaneMesh->draw();
 
 		m_simpleShader->setUniform("modelMatrix", glm::mat4(1.0f));
 		m_simpleShader->setUniform("normalMatrix", glm::mat3(1.0f));
@@ -254,14 +261,17 @@ namespace demo
 
 	void DemoApplication::dispose()
 	{
-		m_simpleShader->destroy();
-		m_simpleShader = nullptr;
-
 		m_torusMesh->destroy();
 		m_torusMesh = nullptr;
 
-		m_modelMesh->destroy();
-		m_modelMesh = nullptr;
+		m_teapotMesh->destroy();
+		m_teapotMesh = nullptr;
+
+		m_airplaneMesh->destroy();
+		m_airplaneMesh = nullptr;
+
+		m_simpleShader->destroy();
+		m_simpleShader = nullptr;
 
 		m_texture->destroy();
 		m_texture = nullptr;
