@@ -26,7 +26,7 @@ namespace plgn
 		Texture(const Texture&) = delete;
 		Texture& operator=(const Texture&) = delete;
 
-		GLuint getTextureHandle() const { return m_textureId; }
+		GLuint getHandle() const { return m_textureId; }
 
 		void destroy();
 

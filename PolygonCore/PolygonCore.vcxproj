@@ -150,6 +150,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\polygon\app\Application.h" />
+    <ClInclude Include="include\polygon\graphics\buffer\IndexBuffer.h" />
+    <ClInclude Include="include\polygon\graphics\buffer\VertexArray.h" />
+    <ClInclude Include="include\polygon\graphics\buffer\VertexBuffer.h" />
     <ClInclude Include="include\polygon\graphics\Shader.h" />
     <ClInclude Include="include\polygon\graphics\texture\Texture.h" />
     <ClInclude Include="include\polygon\graphics\texture\Texture2D.h" />
@@ -159,6 +162,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\polygon\app\Application.cpp" />
+    <ClCompile Include="src\polygon\graphics\buffer\IndexBuffer.cpp" />
+    <ClCompile Include="src\polygon\graphics\buffer\VertexArray.cpp" />
+    <ClCompile Include="src\polygon\graphics\buffer\VertexBuffer.cpp" />
     <ClCompile Include="src\polygon\graphics\Shader.cpp" />
     <ClCompile Include="src\polygon\graphics\texture\Texture.cpp" />
     <ClCompile Include="src\polygon\graphics\texture\Texture2D.cpp" />
