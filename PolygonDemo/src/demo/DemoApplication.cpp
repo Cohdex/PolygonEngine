@@ -228,7 +228,7 @@ namespace demo
 		m_simpleShader->setUniform("t", (float)glfwGetTime());
 		m_texture->bind();
 		
-		modelMatrix = glm::translate(glm::vec3(0, -0.25f, 0));
+		modelMatrix = glm::translate(glm::vec3(-1.25f, -0.25f, -1));
 		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.1f));
 		m_simpleShader->setUniform("modelMatrix", modelMatrix);
 		m_simpleShader->setUniform("normalMatrix", glm::mat3(1.0f));
