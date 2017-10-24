@@ -231,7 +231,6 @@ namespace demo
 		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.1f));
 		m_simpleShader->setUniform("modelMatrix", modelMatrix);
 		m_simpleShader->setUniform("normalMatrix", glm::mat3(1.0f));
-		m_simpleShader->setUniform("materialColor", glm::vec3(0.05, 1.0, 0.2));
 		m_simpleShader->setUniform("materialColor", glm::vec3(30, 100, 255) / 255.0f);
 		m_teapotMesh->draw();
 
