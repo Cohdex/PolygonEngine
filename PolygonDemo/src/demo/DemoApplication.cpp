@@ -196,19 +196,21 @@ namespace demo
 
 		glm::vec3 movement;
 		if (isKeyDown(GLFW_KEY_D))
-			movement.x += moveSpeed;
+			movement.x++;
 		if (isKeyDown(GLFW_KEY_A))
-			movement.x -= moveSpeed;
+			movement.x--;
 		if (isKeyDown(GLFW_KEY_W))
-			movement.z += moveSpeed;
+			movement.z++;
 		if (isKeyDown(GLFW_KEY_S))
-			movement.z -= moveSpeed;
+			movement.z--;
+		if (glm::length(movement) > 1)
+			movement = glm::normalize(movement);
 		if (isKeyDown(GLFW_KEY_SPACE))
-			movement.y += moveSpeed;
+			movement.y++;
 		if (isKeyDown(GLFW_KEY_C))
-			movement.y -= moveSpeed;
+			movement.y--;
 
-		m_camera.move(movement);
+		m_camera.move(movement * moveSpeed);
 	}
 
 	void DemoApplication::render()
