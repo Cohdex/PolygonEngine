@@ -44,7 +44,7 @@ static const std::string simpleFragmentShader = R"(
 		vec2 texCoord;
 	} fs_in;
 
-	layout(location = 0) out vec4 out_fragColor;
+	layout(location = 0) out vec4 out_color;
 
 	uniform sampler2D tex;
 	uniform vec3 materialColor;
@@ -104,10 +104,10 @@ static const std::string simpleFragmentShader = R"(
 
 	void main()
 	{
-		vec3 normal = normalize(gl_FrontFacing ? fs_in.normal : -fs_in.normal);
+		vec3 normal = normalize(mix(-fs_in.normal, fs_in.normal, step(1, int(gl_FrontFacing))));
+
 		vec3 texSample = textureBicubic(tex, fs_in.texCoord + t * 0.1).rgb;
 		vec3 albedo = texSample * materialColor;
-		//albedo = vec3(0.1);
 
 		vec3 ambient = albedo * lightColor * 0.01;
 
@@ -118,9 +118,9 @@ static const std::string simpleFragmentShader = R"(
 
 		vec3 color = ambient + diffuse + specular;
 
-		color += vec3(pow(1.0 - max(0.0, dot(normalize(viewPosition - fs_in.position), normal)), 8));// * materialColor;
+		color += vec3(pow(1.0 - max(0.0, dot(normalize(viewPosition - fs_in.position), normal)), 8));
 
-		out_fragColor = vec4(pow(color, vec3(1.0 / gamma)), 1.0);
+		out_color = vec4(pow(color, vec3(1.0 / gamma)), 1.0);
 	}
 )";
 
