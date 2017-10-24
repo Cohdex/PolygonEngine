@@ -105,13 +105,9 @@ static const std::string simpleFragmentShader = R"(
 	void main()
 	{
 		vec3 normal = normalize(gl_FrontFacing ? fs_in.normal : -fs_in.normal);
-		vec3 texSample = textureBicubic(tex, (fs_in.texCoord + t * 0.1) * vec2(2, 1)).rgb;
+		vec3 texSample = textureBicubic(tex, fs_in.texCoord + t * 0.1).rgb;
 		vec3 albedo = texSample * materialColor;
-		//albedo *= vec3(1.0, 0.02, 0.02);
-		//albedo *= vec3(170, 220, 50) / 255.0;
-		//albedo *= vec3(0.02, 0.2, 0.8);
-		//albedo = mix(vec3(1.0, 0.02, 0.02), vec3(0.9, 0.5, 0.02), texSample.r);
-		//albedo = vec3(0.1);
+		albedo = vec3(0.1);
 
 		vec3 ambient = albedo * lightColor * 0.01;
 
@@ -217,7 +213,7 @@ namespace demo
 	void DemoApplication::render()
 	{
 		glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
-		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		//glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 		
