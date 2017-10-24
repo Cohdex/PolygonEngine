@@ -8,9 +8,7 @@ namespace demo
 	{
 	private:
 		glm::mat4 m_projectionMatrix;
-		glm::vec3 m_viewPosition;
-		float m_pitch, m_yaw;
-		float m_distance = 1.5f;
+		plgn::Camera m_camera;
 
 		std::unique_ptr<plgn::VertexArray> m_torusMesh;
 		std::unique_ptr<plgn::VertexArray> m_teapotMesh;

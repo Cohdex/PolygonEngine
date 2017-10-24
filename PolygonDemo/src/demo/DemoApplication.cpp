@@ -184,31 +184,34 @@ namespace demo
 			moveSpeed *= 3;
 
 		if (isKeyDown(GLFW_KEY_RIGHT))
-			m_yaw += rotSpeed;
+			m_camera.getYaw() += rotSpeed;
 		if (isKeyDown(GLFW_KEY_LEFT))
-			m_yaw -= rotSpeed;
+			m_camera.getYaw() -= rotSpeed;
 		if (isKeyDown(GLFW_KEY_UP))
-			m_pitch += rotSpeed;
+			m_camera.getPitch() += rotSpeed;
 		if (isKeyDown(GLFW_KEY_DOWN))
-			m_pitch -= rotSpeed;
+			m_camera.getPitch() -= rotSpeed;
 
-		m_yaw += (float)(getMouseScreenDX() * rotSpeed * 0.2);
-		m_pitch += (float)(getMouseScreenDY() * rotSpeed * 0.2);
+		m_camera.getYaw() += (float)(getMouseScreenDX() * rotSpeed * 0.2);
+		m_camera.getPitch() += (float)(getMouseScreenDY() * rotSpeed * 0.2);
 
-		m_pitch = glm::clamp(m_pitch, glm::radians(-89.0f), glm::radians(89.0f));
+		m_camera.getPitch() = glm::clamp(m_camera.getPitch(), glm::radians(-90.0f), glm::radians(90.0f));
 
+		glm::vec3 movement;
+		if (isKeyDown(GLFW_KEY_D))
+			movement.x += moveSpeed;
+		if (isKeyDown(GLFW_KEY_A))
+			movement.x -= moveSpeed;
 		if (isKeyDown(GLFW_KEY_W))
-			m_distance -= moveSpeed;
+			movement.z += moveSpeed;
 		if (isKeyDown(GLFW_KEY_S))
-			m_distance += moveSpeed;
+			movement.z -= moveSpeed;
+		if (isKeyDown(GLFW_KEY_SPACE))
+			movement.y += moveSpeed;
+		if (isKeyDown(GLFW_KEY_C))
+			movement.y -= moveSpeed;
 
-		m_distance -= getVerticalScrollDelta() * 0.1f;
-
-		m_distance = glm::max(m_distance, 0.01f);
-
-		m_viewPosition.x = glm::sin(m_yaw) * glm::cos(m_pitch) * m_distance;
-		m_viewPosition.z = glm::cos(m_yaw) * glm::cos(m_pitch) * m_distance;
-		m_viewPosition.y = glm::sin(m_pitch) * m_distance;
+		m_camera.move(movement);
 	}
 
 	void DemoApplication::render()
@@ -219,12 +222,12 @@ namespace demo
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 		
 		glm::vec3 viewTarget(0.0f, 0.0f, 0.0f);
-		glm::mat4 viewMatrix = glm::lookAt(m_viewPosition, viewTarget, glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::mat4 viewMatrix = m_camera.getViewMatrix();
 		glm::mat4 modelMatrix;
 
 		m_simpleShader->use();
 		m_simpleShader->setUniform("viewMatrix", viewMatrix);
-		m_simpleShader->setUniform("viewPosition", m_viewPosition);
+		m_simpleShader->setUniform("viewPosition", m_camera.getPosition());
 		m_simpleShader->setUniform("t", (float)glfwGetTime());
 		m_texture->bind();
 		

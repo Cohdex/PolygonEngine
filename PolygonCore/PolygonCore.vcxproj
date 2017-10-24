@@ -156,6 +156,7 @@
     <ClInclude Include="include\polygon\graphics\Shader.h" />
     <ClInclude Include="include\polygon\graphics\texture\Texture.h" />
     <ClInclude Include="include\polygon\graphics\texture\Texture2D.h" />
+    <ClInclude Include="include\polygon\util\Camera.h" />
     <ClInclude Include="include\polygon\util\MeshUtil.h" />
     <ClInclude Include="include\polygon\util\ObjLoader.h" />
     <ClInclude Include="stdafx.h" />
@@ -168,6 +169,7 @@
     <ClCompile Include="src\polygon\graphics\Shader.cpp" />
     <ClCompile Include="src\polygon\graphics\texture\Texture.cpp" />
     <ClCompile Include="src\polygon\graphics\texture\Texture2D.cpp" />
+    <ClCompile Include="src\polygon\util\Camera.cpp" />
     <ClCompile Include="src\polygon\util\MeshUtil.cpp" />
     <ClCompile Include="src\polygon\util\ObjLoader.cpp" />
     <ClCompile Include="stdafx.cpp">

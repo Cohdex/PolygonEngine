@@ -29,5 +29,6 @@
 #include <polygon/graphics/Shader.h>
 #include <polygon/graphics/texture/Texture.h>
 #include <polygon/graphics/texture/Texture2D.h>
+#include <polygon/util/Camera.h>
 #include <polygon/util/MeshUtil.h>
 #include <polygon/util/ObjLoader.h>
