@@ -242,8 +242,8 @@ namespace demo
 		m_simpleShader->setUniform("materialColor", glm::vec3(0.05, 1.0, 0.2));
 		m_airplaneMesh->draw();
 
-		modelMatrix = glm::translate(glm::vec3(0.75f, 1.025f, 0));
-		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.001f));
+		modelMatrix = glm::translate(glm::vec3(-1.25f, -0.17f, -1));
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.002f));
 		m_simpleShader->setUniform("modelMatrix", modelMatrix);
 		m_simpleShader->setUniform("normalMatrix", glm::mat3(1.0f));
 		m_simpleShader->setUniform("materialColor", glm::vec3(0.2f));
