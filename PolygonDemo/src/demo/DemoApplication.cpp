@@ -261,18 +261,11 @@ namespace demo
 	void DemoApplication::dispose()
 	{
 		m_torusMesh->destroy();
-		m_torusMesh = nullptr;
-
 		m_teapotMesh->destroy();
-		m_teapotMesh = nullptr;
-
 		m_airplaneMesh->destroy();
-		m_airplaneMesh = nullptr;
 
 		m_simpleShader->destroy();
-		m_simpleShader = nullptr;
 
 		m_texture->destroy();
-		m_texture = nullptr;
 	}
 }
