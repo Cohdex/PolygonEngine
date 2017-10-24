@@ -141,6 +141,7 @@ namespace demo
 		m_torusMesh.reset(plgn::MeshUtil::createTorus(0.75f, 0.25f, 128, 64));
 		m_teapotMesh.reset(plgn::ObjLoader::load(RES_PATH "teapot.obj"));
 		m_airplaneMesh.reset(plgn::ObjLoader::load(RES_PATH "f16.obj"));
+		m_spiderMesh.reset(plgn::ObjLoader::load(RES_PATH "spider.obj"));
 		
 		unsigned int texSize = 32;
 		std::vector<unsigned char> pixels;
@@ -176,7 +177,7 @@ namespace demo
 		float rotSpeed = (float)glm::radians(45.0 * deltaTime);
 		float moveSpeed = (float)(0.5 * deltaTime);
 
-		if (isKeyDown(GLFW_KEY_LEFT_SHIFT) || isKeyDown(GLFW_KEY_RIGHT_SHIFT))
+		if (isKeyDown(GLFW_KEY_LEFT_SHIFT))
 			moveSpeed *= 3;
 
 		if (isKeyDown(GLFW_KEY_RIGHT))
@@ -213,8 +214,8 @@ namespace demo
 	void DemoApplication::render()
 	{
 		glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		//glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 		
 		glm::vec3 viewTarget(0.0f, 0.0f, 0.0f);
@@ -241,6 +242,13 @@ namespace demo
 		m_simpleShader->setUniform("materialColor", glm::vec3(0.05, 1.0, 0.2));
 		m_airplaneMesh->draw();
 
+		modelMatrix = glm::translate(glm::vec3(0.75f, 1.025f, 0));
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.001f));
+		m_simpleShader->setUniform("modelMatrix", modelMatrix);
+		m_simpleShader->setUniform("normalMatrix", glm::mat3(1.0f));
+		m_simpleShader->setUniform("materialColor", glm::vec3(0.2f));
+		m_spiderMesh->draw();
+
 		m_simpleShader->setUniform("modelMatrix", glm::mat4(1.0f));
 		m_simpleShader->setUniform("normalMatrix", glm::mat3(1.0f));
 		m_simpleShader->setUniform("materialColor", glm::vec3(1.0, 0.02, 0.02));
@@ -262,6 +270,7 @@ namespace demo
 		m_torusMesh->destroy();
 		m_teapotMesh->destroy();
 		m_airplaneMesh->destroy();
+		m_spiderMesh->destroy();
 
 		m_simpleShader->destroy();
 

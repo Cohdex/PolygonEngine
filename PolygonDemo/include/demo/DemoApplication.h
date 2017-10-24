@@ -13,6 +13,7 @@ namespace demo
 		std::unique_ptr<plgn::VertexArray> m_torusMesh;
 		std::unique_ptr<plgn::VertexArray> m_teapotMesh;
 		std::unique_ptr<plgn::VertexArray> m_airplaneMesh;
+		std::unique_ptr<plgn::VertexArray> m_spiderMesh;
 		std::unique_ptr<plgn::Shader> m_simpleShader;
 		std::unique_ptr<plgn::Texture2D> m_texture;
 
