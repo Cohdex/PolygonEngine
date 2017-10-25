@@ -114,7 +114,7 @@ static const std::string simpleFragmentShader = R"(
 		vec3 diffuse = albedo * lightColor * max(0.0, dot(normal, -directionalLight)) * 0.8;
 
 		vec3 viewDir = normalize(viewPosition - fs_in.position);
-		vec3 specular =	lightColor * pow(max(0.0, dot(viewDir, reflect(directionalLight, normal))), 64) * 1.0;
+		vec3 specular =	lightColor * pow(max(0.0, dot(viewDir, reflect(directionalLight, normal))), 64) * 0.9;
 
 		vec3 color = ambient + diffuse + specular;
 
@@ -139,10 +139,17 @@ namespace demo
 		m_simpleShader->setUniform("projectionMatrix", m_projectionMatrix);
 		
 		m_meshes["torus"]    = std::shared_ptr<plgn::VertexArray>(plgn::MeshUtil::createTorus(0.75f, 0.25f, 128, 64));
+		m_meshes["plane"]    = std::shared_ptr<plgn::VertexArray>(plgn::MeshUtil::createPlane(1, 1, 50, 50));
 		m_meshes["teapot"]   = std::shared_ptr<plgn::VertexArray>(plgn::ObjLoader::load(RES_PATH "teapot.obj"));
 		m_meshes["airplane"] = std::shared_ptr<plgn::VertexArray>(plgn::ObjLoader::load(RES_PATH "f16.obj"));
 		m_meshes["spider"]   = std::shared_ptr<plgn::VertexArray>(plgn::ObjLoader::load(RES_PATH "spider.obj"));
 
+		m_models.push_back({ m_meshes["plane"],
+			glm::vec3(0, -0.25f, 0),
+			glm::radians(glm::vec3(-90, 0, 0)),
+			glm::vec3(100.0f),
+			glm::vec3(0.2f, 0.3f, 0.4f) //glm::vec3(0.8f, 0.9f, 1.0f)
+		});
 		m_models.push_back({ m_meshes["torus"],
 			glm::vec3(),
 			glm::vec3(),

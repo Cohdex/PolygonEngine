@@ -2,17 +2,17 @@
 
 namespace plgn
 {
-	VertexArray* MeshUtil::createPlane(float width, float height)
+	VertexArray* MeshUtil::createPlane(float width, float height, float u, float v)
 	{
 		std::vector<glm::vec3> positions;
 		std::vector<glm::vec3> normals;
 		std::vector<glm::vec2> texCoords;
 		std::vector<GLuint> indices;
 
-		positions.emplace_back(-width, -height, 0);
-		positions.emplace_back(width, -height, 0);
-		positions.emplace_back(width, height, 0);
-		positions.emplace_back(-width, height, 0);
+		positions.emplace_back(-width / 2, -height / 2, 0);
+		positions.emplace_back(width / 2, -height / 2, 0);
+		positions.emplace_back(width / 2, height / 2, 0);
+		positions.emplace_back(-width / 2, height / 2, 0);
 
 		normals.emplace_back(0, 0, 1);
 		normals.emplace_back(0, 0, 1);
@@ -20,9 +20,9 @@ namespace plgn
 		normals.emplace_back(0, 0, 1);
 
 		texCoords.emplace_back(0, 0);
-		texCoords.emplace_back(1, 0);
-		texCoords.emplace_back(1, 1);
-		texCoords.emplace_back(0, 1);
+		texCoords.emplace_back(u, 0);
+		texCoords.emplace_back(u, v);
+		texCoords.emplace_back(0, v);
 
 		indices.emplace_back(0);
 		indices.emplace_back(1);

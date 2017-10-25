@@ -14,7 +14,7 @@ namespace plgn
 		MeshUtil& operator=(const MeshUtil&) = delete;
 
 	public:
-		static VertexArray* createPlane(float width, float height);
+		static VertexArray* createPlane(float width, float height, float u, float v);
 		static VertexArray* createTorus(float centerRadius, float outerRadius, int rings, int segments);
 	};
 }
