@@ -12,6 +12,7 @@
 #include <iostream>
 #include <ctime>
 #include <memory>
+#include <unordered_map>
 
 // OpenGL lib includes
 #include <GL/glew.h>

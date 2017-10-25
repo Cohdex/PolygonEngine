@@ -2,6 +2,44 @@
 
 namespace plgn
 {
+	VertexArray* MeshUtil::createPlane(float width, float height)
+	{
+		std::vector<glm::vec3> positions;
+		std::vector<glm::vec3> normals;
+		std::vector<glm::vec2> texCoords;
+		std::vector<GLuint> indices;
+
+		positions.emplace_back(-width, -height, 0);
+		positions.emplace_back(width, -height, 0);
+		positions.emplace_back(width, height, 0);
+		positions.emplace_back(-width, height, 0);
+
+		normals.emplace_back(0, 0, 1);
+		normals.emplace_back(0, 0, 1);
+		normals.emplace_back(0, 0, 1);
+		normals.emplace_back(0, 0, 1);
+
+		texCoords.emplace_back(0, 0);
+		texCoords.emplace_back(1, 0);
+		texCoords.emplace_back(1, 1);
+		texCoords.emplace_back(0, 1);
+
+		indices.emplace_back(0);
+		indices.emplace_back(1);
+		indices.emplace_back(3);
+		indices.emplace_back(1);
+		indices.emplace_back(2);
+		indices.emplace_back(3);
+
+		VertexArray* vao = new VertexArray(indices.size());
+		vao->setIndexBuffer(new IndexBuffer(indices));
+		vao->addVertexBuffer(new VertexBuffer(positions), 0);
+		vao->addVertexBuffer(new VertexBuffer(normals), 1);
+		vao->addVertexBuffer(new VertexBuffer(texCoords), 2);
+
+		return vao;
+	}
+
 	VertexArray* MeshUtil::createTorus(float centerRadius, float outerRadius, int rings, int segments)
 	{
 		std::vector<glm::vec3> positions;
