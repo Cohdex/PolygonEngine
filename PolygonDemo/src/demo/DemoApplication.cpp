@@ -107,6 +107,7 @@ static const std::string simpleFragmentShader = R"(
 		vec3 normal = normalize(mix(fs_in.normal, -fs_in.normal, step(1, int(!gl_FrontFacing))));
 
 		vec3 texSample = textureBicubic(tex, fs_in.texCoord + t * 0.1).rgb;
+		texSample = textureBicubic(tex, fs_in.texCoord + (texSample.rg * 2 - 1) * 0.02).rgb;
 		vec3 albedo = texSample * materialColor;
 
 		vec3 ambient = albedo * lightColor * 0.04;
@@ -200,7 +201,8 @@ namespace demo
 				pixels.push_back(pixels.back());
 			}
 		}
-		m_texture = std::make_unique<plgn::Texture2D>(texSize, texSize, plgn::TextureFormat::RGB_8, pixels.data());
+		//m_texture = std::make_unique<plgn::Texture2D>(texSize, texSize, plgn::TextureFormat::RGB_8, pixels.data());
+		m_texture = std::make_unique<plgn::Texture2D>(RES_PATH "abstract.png");
 
 		glEnable(GL_DEPTH_TEST);
 
