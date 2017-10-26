@@ -11,7 +11,9 @@ namespace plgn
 		RGB_8,
 		R_16F,
 		RG_16F,
-		RGB_16F
+		RGB_16F,
+		RGBA_8,
+		RGBA_16F
 	};
 
 	class Texture
@@ -51,6 +53,9 @@ namespace plgn
 		case TextureFormat::RGB_8:
 		case TextureFormat::RGB_16F:
 			return GL_RGB;
+		case TextureFormat::RGBA_8:
+		case TextureFormat::RGBA_16F:
+			return GL_RGBA;
 		}
 	}
 
@@ -64,19 +69,24 @@ namespace plgn
 			return GL_RG8;
 		case TextureFormat::RGB_8:
 			return GL_RGB8;
+		case TextureFormat::RGBA_8:
+			return GL_RGBA8;
 		case TextureFormat::R_16F:
 			return GL_R16F;
 		case TextureFormat::RG_16F:
 			return GL_RG16F;
 		case TextureFormat::RGB_16F:
 			return GL_RGB16F;
+		case TextureFormat::RGBA_16F:
+			return GL_RGBA16F;
 		}
 	}
 
 	inline bool Texture::isFloatTextureFormat(TextureFormat format)
 	{
-		return format == TextureFormat::R_16F ||
-			format == TextureFormat::RG_16F ||
-			format == TextureFormat::RGB_16F;
+		return format == TextureFormat::R_16F
+			|| format == TextureFormat::RG_16F
+			|| format == TextureFormat::RGB_16F
+			|| format == TextureFormat::RGBA_16F;
 	}
 }

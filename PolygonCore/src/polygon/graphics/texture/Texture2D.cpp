@@ -1,9 +1,50 @@
 #include "stdafx.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
 namespace plgn
 {
-	Texture2D::Texture2D(unsigned int width, unsigned int height, TextureFormat format, void* data)
+	Texture2D::Texture2D(int width, int height, TextureFormat format, void* data)
 		: Texture(GL_TEXTURE_2D), m_width(width), m_height(height), m_format(format)
+	{
+		init(data);
+	}
+
+	Texture2D::Texture2D(const std::string& filename)
+		: Texture(GL_TEXTURE_2D)
+	{
+		int comp;
+		void* data;
+		bool isHdr = stbi_is_hdr(filename.c_str());
+
+		if (isHdr)
+			data = stbi_loadf(filename.c_str(), &m_width, &m_height, &comp, 0);
+		else
+			data = stbi_load(filename.c_str(), &m_width, &m_height, &comp, 0);
+
+		switch (comp)
+		{
+		case 1:
+			m_format = isHdr ? TextureFormat::R_16F : TextureFormat::R_8;
+			break;
+		case 2:
+			m_format = isHdr ? TextureFormat::RG_16F : TextureFormat::RG_8;
+			break;
+		case 3:
+			m_format = isHdr ? TextureFormat::RGB_16F : TextureFormat::RGB_8;
+			break;
+		case 4:
+			m_format = isHdr ? TextureFormat::RGBA_16F : TextureFormat::RGBA_8;
+			break;
+		}
+
+		init(data);
+
+		stbi_image_free(data);
+	}
+
+	void Texture2D::init(void* data)
 	{
 		GLenum dataType;
 		if (isFloatTextureFormat(m_format))
