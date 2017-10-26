@@ -140,6 +140,7 @@ namespace demo
 		
 		m_meshes["torus"]    = std::shared_ptr<plgn::VertexArray>(plgn::MeshUtil::createTorus(0.75f, 0.25f, 128, 64));
 		m_meshes["plane"]    = std::shared_ptr<plgn::VertexArray>(plgn::MeshUtil::createPlane(1, 1, 50, 50));
+		m_meshes["cube"]     = std::shared_ptr<plgn::VertexArray>(plgn::MeshUtil::createCube(1, 1, 1));
 		m_meshes["teapot"]   = std::shared_ptr<plgn::VertexArray>(plgn::ObjLoader::load(RES_PATH "teapot.obj"));
 		m_meshes["airplane"] = std::shared_ptr<plgn::VertexArray>(plgn::ObjLoader::load(RES_PATH "f16.obj"));
 		m_meshes["spider"]   = std::shared_ptr<plgn::VertexArray>(plgn::ObjLoader::load(RES_PATH "spider.obj"));
@@ -148,7 +149,13 @@ namespace demo
 			glm::vec3(0, -0.25f, 0),
 			glm::radians(glm::vec3(-90, 0, 0)),
 			glm::vec3(100.0f),
-			glm::vec3(0.2f, 0.3f, 0.4f) //glm::vec3(0.8f, 0.9f, 1.0f)
+			glm::vec3(0.2f, 0.3f, 0.4f)
+		});
+		m_models.push_back({ m_meshes["cube"],
+			glm::vec3(1.5f, 0.75f, -2),
+			glm::radians(glm::vec3(0, -30, 0)),
+			glm::vec3(2.0f),
+			glm::vec3(2.0f, 0.9f, 0.05f)
 		});
 		m_models.push_back({ m_meshes["torus"],
 			glm::vec3(),

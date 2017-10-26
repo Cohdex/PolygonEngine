@@ -15,6 +15,7 @@ namespace plgn
 
 	public:
 		static VertexArray* createPlane(float width, float height, float u, float v);
+		static VertexArray* createCube(float width, float height, float depth);
 		static VertexArray* createTorus(float centerRadius, float outerRadius, int rings, int segments);
 	};
 }
