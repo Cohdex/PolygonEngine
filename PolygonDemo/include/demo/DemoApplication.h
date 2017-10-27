@@ -31,6 +31,7 @@ namespace demo
 
 		std::unique_ptr<plgn::Shader> m_simpleShader;
 		std::unique_ptr<plgn::Texture2D> m_texture;
+		std::unique_ptr<plgn::Texture2D> m_normalMap;
 
 		std::unordered_map<std::string, std::shared_ptr<plgn::VertexArray>> m_meshes;
 		std::vector<Model> m_models;

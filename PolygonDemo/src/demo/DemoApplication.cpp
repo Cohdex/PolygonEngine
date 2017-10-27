@@ -4,17 +4,19 @@
 
 static const std::string simpleVertexShader = R"(
 	#version 450 core
-	#line 18
+	#line 8
 
 	layout(location = 0) in vec3 in_position;
 	layout(location = 1) in vec3 in_normal;
 	layout(location = 2) in vec2 in_texCoord;
+	layout(location = 3) in vec3 in_tangent;
 
 	out VS_OUT
 	{
 		vec3 position;
 		vec3 normal;
 		vec2 texCoord;
+		mat3 TBN;
 	} vs_out;
 
 	uniform mat4 modelMatrix = mat4(1.0);
@@ -30,24 +32,30 @@ static const std::string simpleVertexShader = R"(
 		vs_out.position = worldPos.xyz;
 		vs_out.normal = normalize(normalMatrix * in_normal);
 		vs_out.texCoord = in_texCoord;
+		vec3 T = normalize(normalMatrix * in_tangent);
+		vec3 N = vs_out.normal;
+		vec3 B = cross(N, T);
+		vs_out.TBN = mat3(T, B, N);
 	}
 )";
 
 static const std::string simpleFragmentShader = R"(
 	#version 450 core
-	#line 28
+	#line 45
 
 	in VS_OUT
 	{
 		vec3 position;
 		vec3 normal;
 		vec2 texCoord;
+		mat3 TBN;
 	} fs_in;
 
 	layout(location = 0) out vec4 out_color;
 
 	uniform sampler2D tex;
 	uniform vec3 materialColor;
+	uniform sampler2D normalMap;
 
 	uniform vec3 viewPosition;
 	uniform float t;
@@ -102,12 +110,26 @@ static const std::string simpleFragmentShader = R"(
 			sy), vec4(gamma));
 	}
 
+	vec3 getNormal(vec2 texCoord)
+	{
+		vec3 normal = texture(normalMap, texCoord).xyz * 2.0 - 1.0;
+		return normalize(fs_in.TBN * normal);
+	}
+
 	void main()
 	{
-		vec3 normal = normalize(mix(fs_in.normal, -fs_in.normal, step(1, int(!gl_FrontFacing))));
+		vec2 texCoord = fs_in.texCoord + t * 0.1;
+		texCoord = fs_in.texCoord + (textureBicubic(tex, texCoord).rg * 2.0 - 1.0) * 0.02;
 
-		vec3 texSample = textureBicubic(tex, fs_in.texCoord + t * 0.1).rgb;
-		texSample = textureBicubic(tex, fs_in.texCoord + (texSample.rg * 2 - 1) * 0.02).rgb;
+		vec3 normal;
+		#if 0
+			normal = normalize(fs_in.normal);
+		#else
+			normal = getNormal(texCoord);
+		#endif
+		normal = mix(normal, -normal, step(1, int(!gl_FrontFacing)));
+
+		vec3 texSample = textureBicubic(tex, texCoord).rgb;
 		vec3 albedo = texSample * materialColor;
 
 		vec3 ambient = albedo * lightColor * 0.04;
@@ -138,6 +160,8 @@ namespace demo
 		m_simpleShader = std::make_unique<plgn::Shader>(simpleVertexShader, simpleFragmentShader);
 		m_simpleShader->use();
 		m_simpleShader->setUniform("projectionMatrix", m_projectionMatrix);
+		m_simpleShader->setUniform("tex", 0);
+		m_simpleShader->setUniform("normalMap", 1);
 		
 		m_meshes["torus"]    = std::shared_ptr<plgn::VertexArray>(plgn::MeshUtil::createTorus(0.75f, 0.25f, 128, 64));
 		m_meshes["plane"]    = std::shared_ptr<plgn::VertexArray>(plgn::MeshUtil::createPlane(1, 1, 50, 50));
@@ -203,6 +227,9 @@ namespace demo
 		}
 		//m_texture = std::make_unique<plgn::Texture2D>(texSize, texSize, plgn::TextureFormat::RGB_8, pixels.data());
 		m_texture = std::make_unique<plgn::Texture2D>(RES_PATH "abstract.png");
+
+		//m_normalMap = std::make_unique<plgn::Texture2D>(RES_PATH "marble_normal.png");
+		m_normalMap = std::make_unique<plgn::Texture2D>(RES_PATH "rocks_normal.jpg");
 
 		glEnable(GL_DEPTH_TEST);
 
@@ -274,7 +301,8 @@ namespace demo
 		m_simpleShader->setUniform("viewMatrix", viewMatrix);
 		m_simpleShader->setUniform("viewPosition", m_camera.getPosition());
 		m_simpleShader->setUniform("t", (float)glfwGetTime());
-		m_texture->bind();
+		m_texture->bind(0);
+		m_normalMap->bind(1);
 		
 		for (const Model& m : m_models)
 		{
@@ -295,6 +323,7 @@ namespace demo
 		m_simpleShader->destroy();
 
 		m_texture->destroy();
+		m_normalMap->destroy();
 
 		for (auto it : m_meshes)
 		{

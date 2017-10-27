@@ -7,6 +7,7 @@ namespace plgn
 		std::vector<glm::vec3> positions;
 		std::vector<glm::vec3> normals;
 		std::vector<glm::vec2> texCoords;
+		std::vector<glm::vec3> tangents;
 		std::vector<GLuint> indices;
 
 		positions.emplace_back(-width / 2, -height / 2, 0);
@@ -24,6 +25,11 @@ namespace plgn
 		texCoords.emplace_back(u, v);
 		texCoords.emplace_back(0, v);
 
+		tangents.emplace_back(1, 0, 0);
+		tangents.emplace_back(1, 0, 0);
+		tangents.emplace_back(1, 0, 0);
+		tangents.emplace_back(1, 0, 0);
+
 		indices.emplace_back(0);
 		indices.emplace_back(1);
 		indices.emplace_back(3);
@@ -36,6 +42,7 @@ namespace plgn
 		vao->addVertexBuffer(new VertexBuffer(positions), 0);
 		vao->addVertexBuffer(new VertexBuffer(normals), 1);
 		vao->addVertexBuffer(new VertexBuffer(texCoords), 2);
+		vao->addVertexBuffer(new VertexBuffer(tangents), 3);
 
 		return vao;
 	}
@@ -45,71 +52,90 @@ namespace plgn
 		std::vector<glm::vec3> positions;
 		std::vector<glm::vec3> normals;
 		std::vector<glm::vec2> texCoords;
+		std::vector<glm::vec3> tangents;
 		std::vector<GLuint> indices;
 
 		float w = width / 2;
 		float h = height / 2;
 		float d = depth / 2;
 
-		positions.emplace_back(w, -h, d);
+		positions.emplace_back(w, -h,  d);
 		positions.emplace_back(w, -h, -d);
-		positions.emplace_back(w, h, -d);
-		positions.emplace_back(w, h, d);
+		positions.emplace_back(w,  h, -d);
+		positions.emplace_back(w,  h,  d);
+		normals.emplace_back(1, 0, 0);
+		normals.emplace_back(1, 0, 0);
+		normals.emplace_back(1, 0, 0);
+		normals.emplace_back(1, 0, 0);
+		tangents.emplace_back(0, 0, -1);
+		tangents.emplace_back(0, 0, -1);
+		tangents.emplace_back(0, 0, -1);
+		tangents.emplace_back(0, 0, -1);
 
 		positions.emplace_back(-w, -h, -d);
-		positions.emplace_back(-w, -h, d);
-		positions.emplace_back(-w, h, d);
-		positions.emplace_back(-w, h, -d);
+		positions.emplace_back(-w, -h,  d);
+		positions.emplace_back(-w,  h,  d);
+		positions.emplace_back(-w,  h, -d);
+		normals.emplace_back(-1, 0, 0);
+		normals.emplace_back(-1, 0, 0);
+		normals.emplace_back(-1, 0, 0);
+		normals.emplace_back(-1, 0, 0);
+		tangents.emplace_back(0, 0, 1);
+		tangents.emplace_back(0, 0, 1);
+		tangents.emplace_back(0, 0, 1);
+		tangents.emplace_back(0, 0, 1);
 
-		positions.emplace_back(-w, h, d);
-		positions.emplace_back(w, h, d);
-		positions.emplace_back(w, h, -d);
+		positions.emplace_back(-w, h,  d);
+		positions.emplace_back( w, h,  d);
+		positions.emplace_back( w, h, -d);
 		positions.emplace_back(-w, h, -d);
+		normals.emplace_back(0, 1, 0);
+		normals.emplace_back(0, 1, 0);
+		normals.emplace_back(0, 1, 0);
+		normals.emplace_back(0, 1, 0);
+		tangents.emplace_back(1, 0, 0);
+		tangents.emplace_back(1, 0, 0);
+		tangents.emplace_back(1, 0, 0);
+		tangents.emplace_back(1, 0, 0);
 
 		positions.emplace_back(-w, -h, -d);
-		positions.emplace_back(w, -h, -d);
-		positions.emplace_back(w, -h, d);
-		positions.emplace_back(-w, -h, d);
+		positions.emplace_back( w, -h, -d);
+		positions.emplace_back( w, -h,  d);
+		positions.emplace_back(-w, -h,  d);
+		normals.emplace_back(0, -1, 0);
+		normals.emplace_back(0, -1, 0);
+		normals.emplace_back(0, -1, 0);
+		normals.emplace_back(0, -1, 0);
+		tangents.emplace_back(1, 0, 0);
+		tangents.emplace_back(1, 0, 0);
+		tangents.emplace_back(1, 0, 0);
+		tangents.emplace_back(1, 0, 0);
 
 		positions.emplace_back(-w, -h, d);
-		positions.emplace_back(w, -h, d);
-		positions.emplace_back(w, h, d);
-		positions.emplace_back(-w, h, d);
+		positions.emplace_back( w, -h, d);
+		positions.emplace_back( w,  h, d);
+		positions.emplace_back(-w,  h, d);
+		normals.emplace_back(0, 0, 1);
+		normals.emplace_back(0, 0, 1);
+		normals.emplace_back(0, 0, 1);
+		normals.emplace_back(0, 0, 1);
+		tangents.emplace_back(1, 0, 0);
+		tangents.emplace_back(1, 0, 0);
+		tangents.emplace_back(1, 0, 0);
+		tangents.emplace_back(1, 0, 0);
 
-		positions.emplace_back(w, -h, -d);
+		positions.emplace_back( w, -h, -d);
 		positions.emplace_back(-w, -h, -d);
-		positions.emplace_back(-w, h, -d);
-		positions.emplace_back(w, h, -d);
-
-		normals.emplace_back(1, 0, 0);
-		normals.emplace_back(1, 0, 0);
-		normals.emplace_back(1, 0, 0);
-		normals.emplace_back(1, 0, 0);
-
-		normals.emplace_back(-1, 0, 0);
-		normals.emplace_back(-1, 0, 0);
-		normals.emplace_back(-1, 0, 0);
-		normals.emplace_back(-1, 0, 0);
-
-		normals.emplace_back(0, 1, 0);
-		normals.emplace_back(0, 1, 0);
-		normals.emplace_back(0, 1, 0);
-		normals.emplace_back(0, 1, 0);
-
-		normals.emplace_back(0, -1, 0);
-		normals.emplace_back(0, -1, 0);
-		normals.emplace_back(0, -1, 0);
-		normals.emplace_back(0, -1, 0);
-
-		normals.emplace_back(0, 0, 1);
-		normals.emplace_back(0, 0, 1);
-		normals.emplace_back(0, 0, 1);
-		normals.emplace_back(0, 0, 1);
-
+		positions.emplace_back(-w,  h, -d);
+		positions.emplace_back( w,  h, -d);
 		normals.emplace_back(0, 0, -1);
 		normals.emplace_back(0, 0, -1);
 		normals.emplace_back(0, 0, -1);
 		normals.emplace_back(0, 0, -1);
+		tangents.emplace_back(-1, 0, 0);
+		tangents.emplace_back(-1, 0, 0);
+		tangents.emplace_back(-1, 0, 0);
+		tangents.emplace_back(-1, 0, 0);
 
 		for (int i = 0; i < 6; i++)
 		{
@@ -131,6 +157,7 @@ namespace plgn
 		vao->addVertexBuffer(new VertexBuffer(positions), 0);
 		vao->addVertexBuffer(new VertexBuffer(normals), 1);
 		vao->addVertexBuffer(new VertexBuffer(texCoords), 2);
+		vao->addVertexBuffer(new VertexBuffer(tangents), 3);
 
 		return vao;
 	}
@@ -140,6 +167,7 @@ namespace plgn
 		std::vector<glm::vec3> positions;
 		std::vector<glm::vec3> normals;
 		std::vector<glm::vec2> texCoords;
+		std::vector<glm::vec3> tangents;
 		std::vector<GLuint> indices;
 
 		for (int r = 0; r <= rings; r++)
@@ -147,19 +175,22 @@ namespace plgn
 			float u = (float)r / rings * glm::two_pi<float>();
 
 			glm::vec3 w = glm::vec3(glm::cos(u), 0.0f, glm::sin(u));
-			glm::vec3 p = w * centerRadius;
+			glm::vec3 q = w * centerRadius;
+
+			glm::vec3 tangent(w.z, 0, -w.x);
 
 			for (int s = 0; s <= segments; s++)
 			{
 				float v = (float)s / segments * glm::two_pi<float>();
 
 				glm::vec3 n = glm::cos(v) * w + glm::vec3(0.0f, glm::sin(v), 0.0f);
-				glm::vec3 q = p + outerRadius * n;
+				glm::vec3 p = q + outerRadius * n;
 				glm::vec2 t = glm::vec2(1.0f - u / glm::two_pi<float>(), v / glm::two_pi<float>());
 
-				positions.push_back(q);
+				positions.push_back(p);
 				normals.push_back(n);
 				texCoords.push_back(t);
+				tangents.push_back(tangent);
 			}
 		}
 
