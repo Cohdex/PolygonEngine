@@ -177,7 +177,7 @@ namespace plgn
 			glm::vec3 w = glm::vec3(glm::cos(u), 0.0f, glm::sin(u));
 			glm::vec3 q = w * centerRadius;
 
-			glm::vec3 tangent(w.z, 0, -w.x);
+			glm::vec3 tangent(w.z, 0.0f, -w.x);
 
 			for (int s = 0; s <= segments; s++)
 			{
@@ -185,7 +185,7 @@ namespace plgn
 
 				glm::vec3 n = glm::cos(v) * w + glm::vec3(0.0f, glm::sin(v), 0.0f);
 				glm::vec3 p = q + outerRadius * n;
-				glm::vec2 t = glm::vec2(1.0f - u / glm::two_pi<float>(), v / glm::two_pi<float>());
+				glm::vec2 t = glm::vec2((1.0f - u / glm::two_pi<float>()) * 2.0f, v / glm::two_pi<float>());
 
 				positions.push_back(p);
 				normals.push_back(n);
@@ -217,6 +217,7 @@ namespace plgn
 		vao->addVertexBuffer(new VertexBuffer(positions), 0);
 		vao->addVertexBuffer(new VertexBuffer(normals), 1);
 		vao->addVertexBuffer(new VertexBuffer(texCoords), 2);
+		vao->addVertexBuffer(new VertexBuffer(tangents), 3);
 
 		return vao;
 	}
