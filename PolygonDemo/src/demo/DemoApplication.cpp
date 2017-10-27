@@ -118,8 +118,7 @@ static const std::string simpleFragmentShader = R"(
 
 	void main()
 	{
-		vec2 texCoord = fs_in.texCoord + t * 0.1;
-		texCoord = fs_in.texCoord + (textureBicubic(tex, texCoord).rg * 2.0 - 1.0) * 0.02;
+		vec2 texCoord = fs_in.texCoord + (textureBicubic(tex, fs_in.texCoord + t * 0.1).rg * 2.0 - 1.0) * 0.01;
 
 		vec3 normal;
 		#if 0
@@ -141,7 +140,7 @@ static const std::string simpleFragmentShader = R"(
 
 		vec3 color = ambient + diffuse + specular;
 
-		color += vec3(pow(1.0 - max(0.0, dot(normalize(viewPosition - fs_in.position), normal)), 8));
+		color += vec3(pow(1.0 - max(0.0, dot(normalize(viewPosition - fs_in.position), normal)), 8)) * 0.7;
 
 		out_color = vec4(pow(color, vec3(1.0 / gamma)), 1.0);
 	}
@@ -229,7 +228,7 @@ namespace demo
 		m_texture = std::make_unique<plgn::Texture2D>(RES_PATH "abstract.png");
 
 		//m_normalMap = std::make_unique<plgn::Texture2D>(RES_PATH "marble_normal.png");
-		m_normalMap = std::make_unique<plgn::Texture2D>(RES_PATH "rocks_normal.jpg");
+		m_normalMap = std::make_unique<plgn::Texture2D>(RES_PATH "alien_rocks_normal.jpg");
 
 		glEnable(GL_DEPTH_TEST);
 
