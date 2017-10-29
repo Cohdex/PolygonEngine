@@ -35,6 +35,11 @@ static const std::string simpleVertexShader = R"(
 		vec3 T = normalize(normalMatrix * in_tangent);
 		vec3 N = vs_out.normal;
 		vec3 B = cross(N, T);
+		if (in_tangent == vec3(0.0))
+		{
+			T = vec3(0.0);
+			B = vec3(0.0);
+		}
 		vs_out.TBN = mat3(T, B, N);
 	}
 )";
@@ -140,7 +145,8 @@ static const std::string simpleFragmentShader = R"(
 
 		vec3 color = ambient + diffuse + specular;
 
-		color += vec3(pow(1.0 - max(0.0, dot(normalize(viewPosition - fs_in.position), normal)), 8)) * 0.7;
+		vec3 edgeColor = vec3(pow(1.0 - max(0.0, dot(normalize(viewPosition - fs_in.position), normal)), 8)) * 0.7;
+		color += edgeColor;
 
 		out_color = vec4(pow(color, vec3(1.0 / gamma)), 1.0);
 	}
@@ -148,7 +154,7 @@ static const std::string simpleFragmentShader = R"(
 
 namespace demo
 {
-	DemoApplication::DemoApplication() : Application("Demo Application", 1280, 720)
+	DemoApplication::DemoApplication() : Application("Polygon Engine Demo Application", 1920, 1080)
 	{
 	}
 
