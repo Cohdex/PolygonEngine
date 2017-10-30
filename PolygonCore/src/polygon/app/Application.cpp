@@ -4,8 +4,8 @@
 
 namespace plgn
 {
-	Application::Application(const std::string& title, int width, int height)
-		: m_title(title), m_width(width), m_height(height)
+	Application::Application(const std::string& title, int width, int height, bool fullscreen)
+		: m_title(title), m_width(width), m_height(height), m_fullscreen(fullscreen)
 	{
 	}
 
@@ -13,7 +13,7 @@ namespace plgn
 	{
 		try
 		{
-			createWindow(false);
+			createWindow();
 			init();
 			appLoop();
 		}
@@ -30,7 +30,7 @@ namespace plgn
 		m_running = false;
 	}
 
-	void Application::createWindow(bool fullscreen)
+	void Application::createWindow()
 	{
 		if (!glfwInit())
 		{
@@ -41,7 +41,7 @@ namespace plgn
 
 		const GLFWvidmode* vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 		GLFWmonitor* monitor = nullptr;
-		if (fullscreen)
+		if (m_fullscreen)
 		{
 			monitor = glfwGetPrimaryMonitor();
 			m_width = vidmode->width;

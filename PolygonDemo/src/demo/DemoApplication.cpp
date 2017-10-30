@@ -154,7 +154,7 @@ static const std::string simpleFragmentShader = R"(
 
 namespace demo
 {
-	DemoApplication::DemoApplication() : Application("Polygon Engine Demo Application", 1920, 1080)
+	DemoApplication::DemoApplication() : Application("Polygon Engine Demo Application", 1920, 1080, true)
 	{
 	}
 

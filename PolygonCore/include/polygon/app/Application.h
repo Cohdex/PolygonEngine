@@ -16,6 +16,7 @@ namespace plgn
 		std::string m_title;
 		int m_width;
 		int m_height;
+		bool m_fullscreen;
 		GLFWwindow* m_window;
 		bool m_running = false;
 		std::unordered_set<int> m_pressedKeys;
@@ -26,11 +27,11 @@ namespace plgn
 		float m_verticalScrollDelta;
 		float m_horizontalScrollDelta;
 
-		void createWindow(bool fullscreen);
+		void createWindow();
 		void appLoop();
 
 	protected:
-		Application(const std::string& title, int width, int height);
+		Application(const std::string& title, int width, int height, bool fullscreen);
 
 		virtual void init() = 0;
 		virtual void update(double deltaTime) = 0;
