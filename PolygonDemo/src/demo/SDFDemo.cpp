@@ -81,7 +81,7 @@ static const std::string fragmentSource = R"(
 
 namespace demo
 {
-	SDFDemo::SDFDemo() : Application("Polygon Engine SDF Demo", 1280, 720, false)
+	SDFDemo::SDFDemo() : Application("Polygon Engine SDF Demo", 1280, 720, true)
 	{
 	}
 

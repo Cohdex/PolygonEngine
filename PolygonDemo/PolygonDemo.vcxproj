@@ -87,7 +87,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>GLEW_STATIC;WIN32;RES_PATH="../PolygonDemo/Resources/";_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(SolutionDir)PolygonCore\include;$(SolutionDir)Dependencies\glfw-3.2.1\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm-0.9.8.5;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -118,7 +118,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>GLEW_STATIC;WIN32;RES_PATH="../PolygonDemo/Resources/";NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(SolutionDir)PolygonCore\include;$(SolutionDir)Dependencies\glfw-3.2.1\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm-0.9.8.5;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -168,6 +168,9 @@
     <ProjectReference Include="..\PolygonCore\PolygonCore.vcxproj">
       <Project>{e8bd1ce5-5a4d-4a5d-bc74-a522083d499d}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="Resources\models\f16.obj" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

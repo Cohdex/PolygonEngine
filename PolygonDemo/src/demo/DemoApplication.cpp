@@ -154,7 +154,7 @@ static const std::string simpleFragmentShader = R"(
 
 namespace demo
 {
-	DemoApplication::DemoApplication() : Application("Polygon Engine Demo Application", 1280, 720, false)
+	DemoApplication::DemoApplication() : Application("Polygon Engine Demo Application", 1280, 720, true)
 	{
 	}
 
@@ -171,9 +171,9 @@ namespace demo
 		m_meshes["torus"]    = std::shared_ptr<plgn::VertexArray>(plgn::MeshUtil::createTorus(0.75f, 0.25f, 128, 64));
 		m_meshes["plane"]    = std::shared_ptr<plgn::VertexArray>(plgn::MeshUtil::createPlane(1, 1, 50, 50));
 		m_meshes["cube"]     = std::shared_ptr<plgn::VertexArray>(plgn::MeshUtil::createCube(1, 1, 1));
-		m_meshes["teapot"]   = std::shared_ptr<plgn::VertexArray>(plgn::ObjLoader::load(RES_PATH "teapot.obj"));
-		m_meshes["airplane"] = std::shared_ptr<plgn::VertexArray>(plgn::ObjLoader::load(RES_PATH "f16.obj"));
-		m_meshes["spider"]   = std::shared_ptr<plgn::VertexArray>(plgn::ObjLoader::load(RES_PATH "spider.obj"));
+		m_meshes["teapot"]   = std::shared_ptr<plgn::VertexArray>(plgn::ObjLoader::load("Resources/models/teapot.obj"));
+		m_meshes["airplane"] = std::shared_ptr<plgn::VertexArray>(plgn::ObjLoader::load("Resources/models/f16.obj"));
+		m_meshes["spider"]   = std::shared_ptr<plgn::VertexArray>(plgn::ObjLoader::load("Resources/models/spider.obj"));
 
 		m_models.push_back({ m_meshes["plane"],
 			glm::vec3(0, -0.25f, 0),
@@ -230,11 +230,12 @@ namespace demo
 				pixels.push_back(pixels.back());
 			}
 		}
-		m_texture = std::make_unique<plgn::Texture2D>(texSize, texSize, plgn::TextureFormat::RGB_8, pixels.data());
-		//m_texture = std::make_unique<plgn::Texture2D>(RES_PATH "abstract.png");
+		//m_texture = std::make_unique<plgn::Texture2D>(texSize, texSize, plgn::TextureFormat::RGB_8, pixels.data());
+		m_texture = std::make_unique<plgn::Texture2D>("Resources/textures/abstract.png");
 
-		m_normalMap = std::make_unique<plgn::Texture2D>(RES_PATH "marble_normal.png");
-		//m_normalMap = std::make_unique<plgn::Texture2D>(RES_PATH "alien_rocks_normal.jpg");
+		//m_normalMap = std::make_unique<plgn::Texture2D>(RES_PATH "marble_normal.png");
+		//m_normalMap = std::make_unique<plgn::Texture2D>("Resources/marble_normal.png");
+		m_normalMap = std::make_unique<plgn::Texture2D>("Resources/textures/alien_rocks_normal.jpg");
 
 		glEnable(GL_DEPTH_TEST);
 
