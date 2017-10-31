@@ -56,6 +56,8 @@ namespace plgn
 		case TextureFormat::RGBA_8:
 		case TextureFormat::RGBA_16F:
 			return GL_RGBA;
+		default:
+			return -1;
 		}
 	}
 
@@ -79,6 +81,8 @@ namespace plgn
 			return GL_RGB16F;
 		case TextureFormat::RGBA_16F:
 			return GL_RGBA16F;
+		default:
+			return -1;
 		}
 	}
 
