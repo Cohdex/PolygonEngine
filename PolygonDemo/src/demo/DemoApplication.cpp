@@ -154,7 +154,7 @@ static const std::string simpleFragmentShader = R"(
 
 namespace demo
 {
-	DemoApplication::DemoApplication() : Application("Polygon Engine Demo Application", 1280, 720, true)
+	DemoApplication::DemoApplication() : Application("Polygon Engine Demo Application", 1280, 720, false)
 	{
 	}
 
@@ -230,11 +230,11 @@ namespace demo
 				pixels.push_back(pixels.back());
 			}
 		}
-		//m_texture = std::make_unique<plgn::Texture2D>(texSize, texSize, plgn::TextureFormat::RGB_8, pixels.data());
-		m_texture = std::make_unique<plgn::Texture2D>(RES_PATH "abstract.png");
+		m_texture = std::make_unique<plgn::Texture2D>(texSize, texSize, plgn::TextureFormat::RGB_8, pixels.data());
+		//m_texture = std::make_unique<plgn::Texture2D>(RES_PATH "abstract.png");
 
-		//m_normalMap = std::make_unique<plgn::Texture2D>(RES_PATH "marble_normal.png");
-		m_normalMap = std::make_unique<plgn::Texture2D>(RES_PATH "alien_rocks_normal.jpg");
+		m_normalMap = std::make_unique<plgn::Texture2D>(RES_PATH "marble_normal.png");
+		//m_normalMap = std::make_unique<plgn::Texture2D>(RES_PATH "alien_rocks_normal.jpg");
 
 		glEnable(GL_DEPTH_TEST);
 

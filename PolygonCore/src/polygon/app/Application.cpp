@@ -20,7 +20,6 @@ namespace plgn
 		catch (int e)
 		{
 			glfwTerminate();
-			std::cin.get();
 			throw e;
 		}
 	}
@@ -98,12 +97,23 @@ namespace plgn
 	void Application::appLoop()
 	{
 		m_running = true;
+		int fps = 0;
+		double fpsTimer = 0.0;
 		double lastTime = glfwGetTime();
 		while (m_running)
 		{
 			double time = glfwGetTime();
 			double deltaTime = time - lastTime;
 			lastTime = time;
+
+			fps++;
+			fpsTimer += deltaTime;
+			if (fpsTimer >= 1.0)
+			{
+				std::cout << "#FPS: " << fps << std::endl;
+				fpsTimer = 0;
+				fps = 0;
+			}
 
 			m_pressedKeys.clear();
 			m_mouseScreenDX = 0.0f;

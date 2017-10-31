@@ -47,6 +47,10 @@ static const std::string fragmentSource = R"(
 	const float circleRadius2 = 0.2;
 	const vec3 circleColor2 = vec3(0.0, 0.0, 1.0);
 
+	vec2 circleCenter3 = vec2(0.25, 0.0);
+	const float circleRadius3 = 0.25;
+	const vec3 circleColor3 = vec3(0.0, 1.0, 0.0);
+
 	Intersect sdfCircle(vec2 c, float r, vec3 col, vec2 p)
 	{
 		return Intersect(distance(c, p) - r, col);
@@ -62,11 +66,13 @@ static const std::string fragmentSource = R"(
 
 	void main()
 	{
-		circleCenter2 = vec2(cos(t), sin(t)*0) * 0.55;
+		circleCenter2 = vec2(cos(t), 0) * 0.6;
+		circleCenter3 = vec2(cos(t), cos(t)) * 0.6;
 
 		vec3 color = vec3(1.0);
 		Intersect dist = sdfCircle(circleCenter1, circleRadius1, circleColor1, uv);
-		dist = sdfMin(dist, sdfCircle(circleCenter2, circleRadius2, circleColor2, uv), 64);
+		dist = sdfMin(dist, sdfCircle(circleCenter2, circleRadius2, circleColor2, uv), 32);
+		dist = sdfMin(dist, sdfCircle(circleCenter3, circleRadius3, circleColor3, uv), 32);
 		color = dist.col;
 		float alpha = 1.0 - smoothstep(0.0, fwidth(dist.dist), dist.dist);
 		fragColor = vec4(color, alpha);
@@ -75,7 +81,7 @@ static const std::string fragmentSource = R"(
 
 namespace demo
 {
-	SDFDemo::SDFDemo() : Application("Polygon Engine SDF Demo", 1280, 720, true)
+	SDFDemo::SDFDemo() : Application("Polygon Engine SDF Demo", 1280, 720, false)
 	{
 	}
 
