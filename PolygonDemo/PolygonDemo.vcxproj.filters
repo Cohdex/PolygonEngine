@@ -39,7 +39,4 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <Object Include="Resources\models\f16.obj" />
-  </ItemGroup>
 </Project>
