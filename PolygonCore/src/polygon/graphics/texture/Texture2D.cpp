@@ -46,16 +46,13 @@ namespace plgn
 
 	void Texture2D::init(void* data)
 	{
-		GLenum dataType;
-		if (isFloatTextureFormat(m_format))
-			dataType = GL_FLOAT;
-		else
-			dataType = GL_UNSIGNED_BYTE;
+		GLint glInternalFormat = getGLInternalFormat(m_format);
+		GLenum glFormat = getGLFormat(m_format);
+		GLenum dataType = getGLDataType(m_format);
 
 		glGenTextures(1, &m_textureId);
 		glBindTexture(GL_TEXTURE_2D, m_textureId);
-		glTexImage2D(GL_TEXTURE_2D, 0, textureFormatToGLInternalFormat(m_format), m_width, m_height, 0,
-			textureFormatToGLFormat(m_format), dataType, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, m_width, m_height, 0, glFormat, dataType, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		if (GLEW_EXT_texture_filter_anisotropic)
 		{

@@ -35,33 +35,12 @@ namespace plgn
 		void bind() const;
 		void bind(unsigned int textureUnit) const;
 
-		static GLenum textureFormatToGLFormat(TextureFormat format);
-		static GLint textureFormatToGLInternalFormat(TextureFormat format);
-		static bool isFloatTextureFormat(TextureFormat format);
+		static GLint getGLInternalFormat(TextureFormat format);
+		static GLenum getGLFormat(TextureFormat format);
+		static GLenum getGLDataType(TextureFormat format);
 	};
 
-	inline GLenum Texture::textureFormatToGLFormat(TextureFormat format)
-	{
-		switch (format)
-		{
-		case TextureFormat::R_8:
-		case TextureFormat::R_16F:
-			return GL_R;
-		case TextureFormat::RG_8:
-		case TextureFormat::RG_16F:
-			return GL_RG;
-		case TextureFormat::RGB_8:
-		case TextureFormat::RGB_16F:
-			return GL_RGB;
-		case TextureFormat::RGBA_8:
-		case TextureFormat::RGBA_16F:
-			return GL_RGBA;
-		default:
-			return -1;
-		}
-	}
-
-	inline GLint Texture::textureFormatToGLInternalFormat(TextureFormat format)
+	inline GLint Texture::getGLInternalFormat(TextureFormat format)
 	{
 		switch (format)
 		{
@@ -86,11 +65,43 @@ namespace plgn
 		}
 	}
 
-	inline bool Texture::isFloatTextureFormat(TextureFormat format)
+	inline GLenum Texture::getGLFormat(TextureFormat format)
 	{
-		return format == TextureFormat::R_16F
-			|| format == TextureFormat::RG_16F
-			|| format == TextureFormat::RGB_16F
-			|| format == TextureFormat::RGBA_16F;
+		switch (format)
+		{
+		case TextureFormat::R_8:
+		case TextureFormat::R_16F:
+			return GL_RED;
+		case TextureFormat::RG_8:
+		case TextureFormat::RG_16F:
+			return GL_RG;
+		case TextureFormat::RGB_8:
+		case TextureFormat::RGB_16F:
+			return GL_RGB;
+		case TextureFormat::RGBA_8:
+		case TextureFormat::RGBA_16F:
+			return GL_RGBA;
+		default:
+			return -1;
+		}
+	}
+
+	inline GLenum Texture::getGLDataType(TextureFormat format)
+	{
+		switch (format)
+		{
+		case TextureFormat::R_8:
+		case TextureFormat::RG_8:
+		case TextureFormat::RGB_8:
+		case TextureFormat::RGBA_8:
+			return GL_UNSIGNED_BYTE;
+		case TextureFormat::R_16F:
+		case TextureFormat::RG_16F:
+		case TextureFormat::RGB_16F:
+		case TextureFormat::RGBA_16F:
+			return GL_FLOAT;
+		default:
+			return -1;
+		}
 	}
 }
