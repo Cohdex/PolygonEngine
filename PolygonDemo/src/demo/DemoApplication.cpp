@@ -145,8 +145,10 @@ static const std::string simpleFragmentShader = R"(
 
 		vec3 color = ambient + diffuse + specular;
 
-		vec3 edgeColor = vec3(pow(1.0 - max(0.0, dot(normalize(viewPosition - fs_in.position), normalize(mix(fs_in.normal, -fs_in.normal, step(1, int(!gl_FrontFacing)))))), 16)) * materialColor;// * vec3(0.7, 0.0, 0.0);
+		vec3 edgeColor = vec3(pow(1.0 - max(0.0, dot(normalize(viewPosition - fs_in.position), normal)), 16)) * materialColor;// * vec3(0.7, 0.0, 0.0);
 		color += edgeColor;
+
+		//color = vec3((2 * 0.01) / (50.0 + 0.01 - gl_FragCoord.z * (50.0 - 0.01)));
 
 		out_color = vec4(pow(color, vec3(1.0 / gamma)), 1.0);
 	}
@@ -185,7 +187,7 @@ namespace demo
 			glm::vec3(1.5f, 0.75f, -2),
 			glm::radians(glm::vec3(0, -30, 0)),
 			glm::vec3(2.0f),
-			glm::vec3(1.0f, 0.4f, 0.05f)
+			glm::vec3(0.8f, 0.8f, 0.05f)
 		});
 		m_models.push_back({ m_meshes["torus"],
 			glm::vec3(),
@@ -220,22 +222,23 @@ namespace demo
 		
 		unsigned int texSize = 32;
 		std::vector<unsigned char> pixels;
-		pixels.reserve(texSize * texSize * 1);
+		pixels.reserve(texSize * texSize * 3);
 		for (unsigned int y = 0; y < texSize; y++)
 		{
 			for (unsigned int x = 0; x < texSize; x++)
 			{
 				pixels.push_back((unsigned char)(((std::rand() % 256) * 75 / 100) + (255 * 25 / 100)));
-				//pixels.push_back(pixels.back());
-				//pixels.push_back(pixels.back());
+				pixels.back() = 0;
+				pixels.push_back(pixels.back());
+				pixels.push_back(pixels.back());
 			}
 		}
-		m_texture = std::make_unique<plgn::Texture2D>(texSize, texSize, plgn::TextureFormat::R_8, pixels.data());
-		//m_texture = std::make_unique<plgn::Texture2D>("Resources/textures/abstract.png");
+		//m_texture = std::make_unique<plgn::Texture2D>(texSize, texSize, plgn::TextureFormat::RGB_8, pixels.data());
+		m_texture = std::make_unique<plgn::Texture2D>("Resources/textures/abstract.png");
 
 		//m_normalMap = std::make_unique<plgn::Texture2D>("Resources/textures/marble_normal.png");
-		m_normalMap = std::make_unique<plgn::Texture2D>("Resources/textures/rocks_normal.jpg");
-		//m_normalMap = std::make_unique<plgn::Texture2D>("Resources/textures/alien_rocks_normal.jpg");
+		//m_normalMap = std::make_unique<plgn::Texture2D>("Resources/textures/rocks_normal.jpg");
+		m_normalMap = std::make_unique<plgn::Texture2D>("Resources/textures/alien_rocks_normal.jpg");
 
 		glEnable(GL_DEPTH_TEST);
 
