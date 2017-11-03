@@ -109,10 +109,10 @@ static const std::string simpleFragmentShader = R"(
 		float sx = s.x / (s.x + s.y);
 		float sy = s.z / (s.z + s.w);
 
-		return pow(mix(
+		return mix(
 			mix(sample3, sample2, sx),
 			mix(sample1, sample0, sx),
-			sy), vec4(gamma));
+			sy);
 	}
 
 	vec3 getNormal(vec2 texCoord)
@@ -129,11 +129,11 @@ static const std::string simpleFragmentShader = R"(
 		#if 0
 			normal = normalize(fs_in.normal);
 		#else
-			normal = getNormal(texCoord);
+			normal = mix(getNormal(texCoord), normalize(fs_in.normal), smoothstep(0.0, 1.0, sin(t) * 0.5 + 0.5));
 		#endif
 		normal = mix(normal, -normal, step(1, int(!gl_FrontFacing)));
 
-		vec3 texSample = textureBicubic(tex, texCoord).rgb;
+		vec3 texSample = pow(texture(tex, texCoord).rgb, vec3(gamma));
 		vec3 albedo = texSample * materialColor;
 
 		vec3 ambient = albedo * lightColor * 0.04;
@@ -146,7 +146,7 @@ static const std::string simpleFragmentShader = R"(
 		vec3 color = ambient + diffuse + specular;
 
 		vec3 edgeColor = vec3(pow(1.0 - max(0.0, dot(normalize(viewPosition - fs_in.position), normal)), 16)) * materialColor;// * vec3(0.7, 0.0, 0.0);
-		color += edgeColor;
+		//color += edgeColor;
 
 		//color = vec3((2 * 0.01) / (50.0 + 0.01 - gl_FragCoord.z * (50.0 - 0.01)));
 
@@ -237,8 +237,8 @@ namespace demo
 		m_texture = std::make_unique<plgn::Texture2D>("res/textures/abstract.png");
 
 		//m_normalMap = std::make_unique<plgn::Texture2D>("res/textures/marble_normal.png");
-		//m_normalMap = std::make_unique<plgn::Texture2D>("res/textures/rocks_normal.jpg");
-		m_normalMap = std::make_unique<plgn::Texture2D>("res/textures/alien_rocks_normal.jpg");
+		m_normalMap = std::make_unique<plgn::Texture2D>("res/textures/rocks_normal.jpg");
+		//m_normalMap = std::make_unique<plgn::Texture2D>("res/textures/alien_rocks_normal.jpg");
 
 		glEnable(GL_DEPTH_TEST);
 
