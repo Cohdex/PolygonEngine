@@ -21,6 +21,11 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+// Assimp lib includes
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 // Polygon Core includes
 #include <polygon/app/Application.h>
 #include <polygon/graphics/buffer/VertexArray.h>
@@ -29,6 +34,8 @@
 #include <polygon/graphics/Shader.h>
 #include <polygon/graphics/texture/Texture.h>
 #include <polygon/graphics/texture/Texture2D.h>
+#include <polygon/graphics/model/Mesh.h>
+#include <polygon/graphics/model/Model.h>
 #include <polygon/util/Camera.h>
 #include <polygon/util/MeshUtil.h>
 #include <polygon/util/ObjLoader.h>

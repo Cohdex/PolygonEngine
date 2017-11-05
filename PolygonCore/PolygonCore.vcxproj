@@ -93,7 +93,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>GLEW_STATIC;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(SolutionDir)Dependencies\glfw-3.2.1\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(solutionDir)Dependencies\glm-0.9.8.5;$(solutionDir)Dependencies\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(SolutionDir)Dependencies\glfw-3.2.1\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(solutionDir)Dependencies\glm-0.9.8.5;$(solutionDir)Dependencies\stb;$(SolutionDir)Dependencies\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -110,7 +110,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>GLEW_STATIC;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(SolutionDir)Dependencies\glfw-3.2.1\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(solutionDir)Dependencies\glm-0.9.8.5;$(solutionDir)Dependencies\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(SolutionDir)Dependencies\glfw-3.2.1\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(solutionDir)Dependencies\glm-0.9.8.5;$(solutionDir)Dependencies\stb;$(SolutionDir)Dependencies\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -153,6 +153,8 @@
     <ClInclude Include="include\polygon\graphics\buffer\IndexBuffer.h" />
     <ClInclude Include="include\polygon\graphics\buffer\VertexArray.h" />
     <ClInclude Include="include\polygon\graphics\buffer\VertexBuffer.h" />
+    <ClInclude Include="include\polygon\graphics\model\Mesh.h" />
+    <ClInclude Include="include\polygon\graphics\model\Model.h" />
     <ClInclude Include="include\polygon\graphics\Shader.h" />
     <ClInclude Include="include\polygon\graphics\texture\Texture.h" />
     <ClInclude Include="include\polygon\graphics\texture\Texture2D.h" />
@@ -166,6 +168,8 @@
     <ClCompile Include="src\polygon\graphics\buffer\IndexBuffer.cpp" />
     <ClCompile Include="src\polygon\graphics\buffer\VertexArray.cpp" />
     <ClCompile Include="src\polygon\graphics\buffer\VertexBuffer.cpp" />
+    <ClCompile Include="src\polygon\graphics\model\Mesh.cpp" />
+    <ClCompile Include="src\polygon\graphics\model\Model.cpp" />
     <ClCompile Include="src\polygon\graphics\Shader.cpp" />
     <ClCompile Include="src\polygon\graphics\texture\Texture.cpp" />
     <ClCompile Include="src\polygon\graphics\texture\Texture2D.cpp" />
