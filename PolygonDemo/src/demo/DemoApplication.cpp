@@ -177,6 +177,8 @@ namespace demo
 		m_meshes["airplane"] = std::shared_ptr<plgn::VertexArray>(plgn::ObjLoader::load("res/models/f16.obj"));
 		m_meshes["spider"]   = std::shared_ptr<plgn::VertexArray>(plgn::ObjLoader::load("res/models/spider.obj"));
 
+		m_testModel = std::make_unique<plgn::Model>("res/models/teapot.obj");
+
 		m_models.push_back({ m_meshes["plane"],
 			glm::vec3(0, -0.25f, 0),
 			glm::radians(glm::vec3(-90, 0, 0)),
@@ -322,6 +324,8 @@ namespace demo
 			m_simpleShader->setUniform("materialColor", m.materialColor);
 			m.mesh->draw();
 		}
+
+		m_testModel->draw();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glUseProgram(0);

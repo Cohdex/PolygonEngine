@@ -27,6 +27,8 @@
 #include <polygon/graphics/buffer/VertexArray.h>
 #include <polygon/graphics/Shader.h>
 #include <polygon/graphics/texture/Texture2D.h>
+#include <polygon/graphics/model/Mesh.h>
+#include <polygon/graphics/model/Model.h>
 #include <polygon/util/Camera.h>
 #include <polygon/util/MeshUtil.h>
 #include <polygon/util/ObjLoader.h>

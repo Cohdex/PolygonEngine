@@ -36,6 +36,8 @@ namespace demo
 		std::unordered_map<std::string, std::shared_ptr<plgn::VertexArray>> m_meshes;
 		std::vector<Model> m_models;
 
+		std::unique_ptr<plgn::Model> m_testModel;
+
 	public:
 		DemoApplication();
 		DemoApplication(const DemoApplication&) = delete;
