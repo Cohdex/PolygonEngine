@@ -156,7 +156,7 @@ static const std::string simpleFragmentShader = R"(
 
 namespace demo
 {
-	DemoApplication::DemoApplication() : Application("Polygon Engine Demo Application", 1280, 720, true)
+	DemoApplication::DemoApplication() : Application("Polygon Engine Demo Application", 1280, 720, false)
 	{
 	}
 
@@ -177,7 +177,7 @@ namespace demo
 		m_meshes["airplane"] = std::shared_ptr<plgn::VertexArray>(plgn::ObjLoader::load("res/models/f16.obj"));
 		m_meshes["spider"]   = std::shared_ptr<plgn::VertexArray>(plgn::ObjLoader::load("res/models/spider.obj"));
 
-		m_testModel = std::make_unique<plgn::Model>("res/models/teapot.obj");
+		//m_testModel = std::make_unique<plgn::Model>("res/models/teapot.obj");
 
 		m_models.push_back({ m_meshes["plane"],
 			glm::vec3(0, -0.25f, 0),
@@ -325,7 +325,7 @@ namespace demo
 			m.mesh->draw();
 		}
 
-		m_testModel->draw();
+		//m_testModel->draw();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glUseProgram(0);
