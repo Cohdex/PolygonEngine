@@ -150,9 +150,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\polygon\app\Application.h" />
-    <ClInclude Include="include\polygon\graphics\buffer\IndexBuffer.h" />
-    <ClInclude Include="include\polygon\graphics\buffer\VertexArray.h" />
-    <ClInclude Include="include\polygon\graphics\buffer\VertexBuffer.h" />
+    <ClInclude Include="include\polygon\graphics\vertexbuffer\IndexBuffer.h" />
+    <ClInclude Include="include\polygon\graphics\vertexbuffer\VertexArray.h" />
+    <ClInclude Include="include\polygon\graphics\vertexbuffer\VertexBuffer.h" />
     <ClInclude Include="include\polygon\graphics\model\Mesh.h" />
     <ClInclude Include="include\polygon\graphics\model\Model.h" />
     <ClInclude Include="include\polygon\graphics\Shader.h" />
@@ -165,9 +165,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\polygon\app\Application.cpp" />
-    <ClCompile Include="src\polygon\graphics\buffer\IndexBuffer.cpp" />
-    <ClCompile Include="src\polygon\graphics\buffer\VertexArray.cpp" />
-    <ClCompile Include="src\polygon\graphics\buffer\VertexBuffer.cpp" />
+    <ClCompile Include="src\polygon\graphics\vertexbuffer\IndexBuffer.cpp" />
+    <ClCompile Include="src\polygon\graphics\vertexbuffer\VertexArray.cpp" />
+    <ClCompile Include="src\polygon\graphics\vertexbuffer\VertexBuffer.cpp" />
     <ClCompile Include="src\polygon\graphics\model\Mesh.cpp" />
     <ClCompile Include="src\polygon\graphics\model\Model.cpp" />
     <ClCompile Include="src\polygon\graphics\Shader.cpp" />

@@ -2,7 +2,7 @@
 
 #include <GL/glew.h>
 
-#include "../graphics/buffer/VertexArray.h"
+#include "../graphics/vertexbuffer/VertexArray.h"
 
 namespace plgn
 {

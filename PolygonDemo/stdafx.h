@@ -24,7 +24,7 @@
 
 // Polygon Core lib includes
 #include <polygon/app/Application.h>
-#include <polygon/graphics/buffer/VertexArray.h>
+#include <polygon/graphics/vertexbuffer/VertexArray.h>
 #include <polygon/graphics/Shader.h>
 #include <polygon/graphics/texture/Texture2D.h>
 #include <polygon/graphics/model/Mesh.h>

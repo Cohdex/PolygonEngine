@@ -28,9 +28,9 @@
 
 // Polygon Core includes
 #include <polygon/app/Application.h>
-#include <polygon/graphics/buffer/VertexArray.h>
-#include <polygon/graphics/buffer/VertexBuffer.h>
-#include <polygon/graphics/buffer/IndexBuffer.h>
+#include <polygon/graphics/vertexbuffer/VertexArray.h>
+#include <polygon/graphics/vertexbuffer/VertexBuffer.h>
+#include <polygon/graphics/vertexbuffer/IndexBuffer.h>
 #include <polygon/graphics/Shader.h>
 #include <polygon/graphics/texture/Texture.h>
 #include <polygon/graphics/texture/Texture2D.h>
