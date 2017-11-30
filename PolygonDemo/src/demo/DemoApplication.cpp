@@ -156,6 +156,9 @@ static const std::string simpleFragmentShader = R"(
 
 namespace demo
 {
+	static GLuint framebuffer;
+	static GLuint textureAttachment0;
+
 	DemoApplication::DemoApplication() : Application("Polygon Engine Demo Application", 1280, 720, false)
 	{
 	}
@@ -249,6 +252,31 @@ namespace demo
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ZERO);
+
+		glGenFramebuffers(1, &framebuffer);
+		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+		{
+			glGenTextures(1, &textureAttachment0);
+			glBindTexture(GL_TEXTURE_2D, textureAttachment0);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, getWidth(), getHeight(), 0, GL_RGB, GL_FLOAT, nullptr);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glBindTexture(GL_TEXTURE_2D, 0);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureAttachment0, 0);
+
+			GLuint depthStencilBuffer;
+			glGenRenderbuffers(1, &depthStencilBuffer);
+			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, getWidth(), getHeight());
+			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthStencilBuffer);
+		}
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		{
+			std::cerr << "Failed to create framebuffer" << std::endl;
+			throw 1;
+		}
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
 	void DemoApplication::update(double deltaTime)
