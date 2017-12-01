@@ -10,18 +10,28 @@
 
 namespace plgn
 {
+	enum class DrawMode
+	{
+		POINTS,
+		LINES,
+		TRIANGLES,
+		TRIANGLE_STRIP,
+		TRIANGLE_FAN
+	};
+
 	class VertexArray
 	{
 	private:
 		GLuint m_vaoId;
 
 		GLsizei m_count;
+		DrawMode m_drawMode;
 
 		std::vector<VertexBuffer*> m_vertexBuffers;
 		std::unique_ptr<IndexBuffer> m_indexBuffer;
 
 	public:
-		VertexArray(GLsizei count);
+		VertexArray(GLsizei count, DrawMode drawMode = DrawMode::TRIANGLES);
 
 		~VertexArray();
 

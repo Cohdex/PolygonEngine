@@ -154,10 +154,86 @@ static const std::string simpleFragmentShader = R"(
 	}
 )";
 
+static const std::string screenVertexShader = R"(
+	#version 450 core
+	#line 160
+
+	const vec2 positions[] = vec2[](
+		vec2(-1, -1),
+		vec2(1, -1),
+		vec2(-1, 1),
+		vec2(1, 1)
+	);
+
+	out vec2 texCoord;
+
+	void main()
+	{
+		vec2 pos = positions[gl_VertexID];
+		gl_Position = vec4(pos, 0, 1);
+		texCoord = pos * 0.5 + 0.5;
+	}
+)";
+
+static const std::string screenFragmentShader = R"(
+	#version 450 core
+	#line 181
+
+	in vec2 texCoord;
+
+	out vec4 outColor;
+
+	uniform sampler2D tex;
+
+	vec3 convolute(vec3 samples[3][3], float kernel[3][3])
+	{
+		vec3 result = vec3(0.0);
+		for (int i = 0; i < 3; i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				result += samples[i][j] * kernel[i][j];
+			}
+		}
+		return result;
+	}
+
+	vec3[3][3] getSamples()
+	{
+		vec3 samples[3][3];
+		samples[0][0] = textureOffset(tex, texCoord, ivec2(-1, -1)).rgb;
+		samples[1][0] = textureOffset(tex, texCoord, ivec2(0, -1)).rgb;
+		samples[2][0] = textureOffset(tex, texCoord, ivec2(1, -1)).rgb;
+		samples[0][1] = textureOffset(tex, texCoord, ivec2(-1, 0)).rgb;
+		samples[1][1] = textureOffset(tex, texCoord, ivec2(0, 0)).rgb;
+		samples[2][1] = textureOffset(tex, texCoord, ivec2(1, 0)).rgb;
+		samples[0][2] = textureOffset(tex, texCoord, ivec2(-1, 1)).rgb;
+		samples[1][2] = textureOffset(tex, texCoord, ivec2(0, 1)).rgb;
+		samples[2][2] = textureOffset(tex, texCoord, ivec2(1, 1)).rgb;
+		return samples;
+	}
+
+	void main()
+	{
+		//vec3 color = texture(tex, texCoord).rgb;
+		//color = vec3(dot(color, vec3(0.2126, 0.7152, 0.0722)));
+		vec3 samples[3][3] = getSamples();
+		float kernel[3][3] = {
+			{ 2,   2, 2 },
+			{ 2, -15, 2 },
+			{ 2,   2, 2 }
+		};
+		vec3 color = convolute(getSamples(), kernel);
+		outColor = vec4(color, 1.0);
+	}
+)";
+
 namespace demo
 {
 	static GLuint framebuffer;
 	static GLuint textureAttachment0;
+	std::unique_ptr<plgn::Shader> screenShader;
+	std::unique_ptr<plgn::VertexArray> screenVao;
 
 	DemoApplication::DemoApplication() : Application("Polygon Engine Demo Application", 1280, 720, false)
 	{
@@ -268,6 +344,7 @@ namespace demo
 
 			GLuint depthStencilBuffer;
 			glGenRenderbuffers(1, &depthStencilBuffer);
+			glBindRenderbuffer(GL_RENDERBUFFER, depthStencilBuffer);
 			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, getWidth(), getHeight());
 			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthStencilBuffer);
 		}
@@ -277,6 +354,9 @@ namespace demo
 			throw 1;
 		}
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		screenShader = std::make_unique<plgn::Shader>(screenVertexShader, screenFragmentShader);
+		screenVao = std::make_unique<plgn::VertexArray>(4, plgn::DrawMode::TRIANGLE_STRIP);
 	}
 
 	void DemoApplication::update(double deltaTime)
@@ -328,6 +408,8 @@ namespace demo
 
 	void DemoApplication::render()
 	{
+		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
 		glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		//glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
@@ -355,8 +437,15 @@ namespace demo
 
 		//m_testModel->draw();
 
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glDisable(GL_DEPTH_TEST);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, textureAttachment0);
+		screenShader->use();
+		screenVao->draw();
 		glUseProgram(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glEnable(GL_DEPTH_TEST);
 	}
 
 	void DemoApplication::dispose()

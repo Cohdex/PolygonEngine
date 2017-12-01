@@ -2,8 +2,8 @@
 
 namespace plgn
 {
-	VertexArray::VertexArray(GLsizei count)
-		: m_count(count)
+	VertexArray::VertexArray(GLsizei count, DrawMode drawMode /*= TRIANGLES*/)
+		: m_count(count), m_drawMode(drawMode)
 	{
 		glGenVertexArrays(1, &m_vaoId);
 	}
@@ -41,14 +41,34 @@ namespace plgn
 
 	void VertexArray::draw() const
 	{
+		GLenum glDrawMode;
+		switch (m_drawMode)
+		{
+		case DrawMode::POINTS:
+			glDrawMode = GL_POINTS;
+			break;
+		case DrawMode::LINES:
+			glDrawMode = GL_LINES;
+			break;
+		case DrawMode::TRIANGLES:
+			glDrawMode = GL_TRIANGLES;
+			break;
+		case DrawMode::TRIANGLE_STRIP:
+			glDrawMode = GL_TRIANGLE_STRIP;
+			break;
+		case DrawMode::TRIANGLE_FAN:
+			glDrawMode = GL_TRIANGLE_FAN;
+			break;
+		}
+
 		glBindVertexArray(m_vaoId);
 		if (m_indexBuffer == nullptr)
 		{
-			glDrawArrays(GL_TRIANGLES, 0, m_count);
+			glDrawArrays(glDrawMode, 0, m_count);
 		}
 		else
 		{
-			glDrawElements(GL_TRIANGLES, m_count, GL_UNSIGNED_INT, nullptr);
+			glDrawElements(glDrawMode, m_count, GL_UNSIGNED_INT, nullptr);
 		}
 		glBindVertexArray(0);
 	}
