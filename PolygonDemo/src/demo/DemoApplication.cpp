@@ -185,14 +185,14 @@ static const std::string screenFragmentShader = R"(
 
 	uniform sampler2D tex;
 
-	vec3 convolute(vec3 samples[3][3], float kernel[3][3])
+	vec3 convolute(vec3 samples[3][3], float kernel[9])
 	{
 		vec3 result = vec3(0.0);
 		for (int i = 0; i < 3; i++)
 		{
 			for (int j = 0; j < 3; j++)
 			{
-				result += samples[i][j] * kernel[i][j];
+				result += vec3(dot(samples[i][j], vec3(0.2126, 0.7152, 0.0722))) * kernel[i + j * 3];
 			}
 		}
 		return result;
@@ -218,12 +218,33 @@ static const std::string screenFragmentShader = R"(
 		//vec3 color = texture(tex, texCoord).rgb;
 		//color = vec3(dot(color, vec3(0.2126, 0.7152, 0.0722)));
 		vec3 samples[3][3] = getSamples();
-		float kernel[3][3] = {
-			{ 2,   2, 2 },
-			{ 2, -15, 2 },
-			{ 2,   2, 2 }
+		//float kernel[9] = {
+		//	2,   2, 2,
+		//	2, -15, 2,
+		//	2,   2, 2
+		//};
+		//float kernel[9] = {
+		//	1.0/16, 2.0/16, 1.0/16,
+		//	2.0/16, 4.0/16, 2.0/16,
+		//	1.0/16, 2.0/16, 1.0/16
+		//};
+		//float kernel[9] = {
+		//	1, 1, 1,
+		//	1, -8, 1,
+		//	1, 1, 1
+		//};
+		//float kernel[9] = {
+		//	-1, -1, -1,
+		//	-1, 9, -1,
+		//	-1, -1, -1
+		//};
+		float kernel[9] = {
+			-2, -1, 0,
+			-1, 1, 1,
+			0, 1, 2
 		};
 		vec3 color = convolute(getSamples(), kernel);
+		//color = vec3(dot(color, vec3(0.2126, 0.7152, 0.0722)));
 		outColor = vec4(color, 1.0);
 	}
 )";
