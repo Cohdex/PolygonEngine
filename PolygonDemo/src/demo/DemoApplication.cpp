@@ -233,16 +233,21 @@ static const std::string screenFragmentShader = R"(
 		//	1, -8, 1,
 		//	1, 1, 1
 		//};
-		//float kernel[9] = { // Sharpen
-		//	-1, -1, -1,
-		//	-1, 9, -1,
-		//	-1, -1, -1
-		//};
-		float kernel[9] = { // Emboss
-			-2, -1, 0,
-			-1, 1, 1,
-			0, 1, 2
+		float kernel[9] = { // Sharpen
+			0, -1, 0,
+			-1, 5, -1,
+			0, -1, 0
 		};
+		//float kernel[9] = { // Emboss
+		//	-2, -1, 0,
+		//	-1, 1, 1,
+		//	0, 1, 2
+		//};
+		//float kernel[9] = { // Y-Sobel
+		//	1, 2, 1,
+		//	0, 0, 0,
+		//	-1, -2, -1
+		//};
 		vec3 color = convolute(getSamples(), kernel);
 		//color = vec3(dot(color, vec3(0.2126, 0.7152, 0.0722)));
 		outColor = vec4(color, 1.0);
