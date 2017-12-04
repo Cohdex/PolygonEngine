@@ -192,7 +192,7 @@ static const std::string screenFragmentShader = R"(
 		{
 			for (int j = 0; j < 3; j++)
 			{
-				result += vec3(dot(samples[i][j], vec3(0.2126, 0.7152, 0.0722))) * kernel[i + j * 3];
+				result += samples[i][j] * kernel[i + j * 3];
 			}
 		}
 		return result;
@@ -218,27 +218,27 @@ static const std::string screenFragmentShader = R"(
 		//vec3 color = texture(tex, texCoord).rgb;
 		//color = vec3(dot(color, vec3(0.2126, 0.7152, 0.0722)));
 		vec3 samples[3][3] = getSamples();
-		//float kernel[9] = {
+		//float kernel[9] = { // Drunk
 		//	2,   2, 2,
 		//	2, -15, 2,
 		//	2,   2, 2
 		//};
-		//float kernel[9] = {
+		//float kernel[9] = { // Blur
 		//	1.0/16, 2.0/16, 1.0/16,
 		//	2.0/16, 4.0/16, 2.0/16,
 		//	1.0/16, 2.0/16, 1.0/16
 		//};
-		//float kernel[9] = {
+		//float kernel[9] = { // Edge detection
 		//	1, 1, 1,
 		//	1, -8, 1,
 		//	1, 1, 1
 		//};
-		//float kernel[9] = {
+		//float kernel[9] = { // Sharpen
 		//	-1, -1, -1,
 		//	-1, 9, -1,
 		//	-1, -1, -1
 		//};
-		float kernel[9] = {
+		float kernel[9] = { // Emboss
 			-2, -1, 0,
 			-1, 1, 1,
 			0, 1, 2
