@@ -275,7 +275,7 @@ static const std::string screenFragmentShader = R"(
 		//	-1, -2, -1
 		//};
 		vec3 color;// = convolute(getSamples(), kernel);
-		color = vec3(sobel(samples));
+		color = samples[1][1] * sqrt(sobel(samples));
 		//color = vec3(gray(color));
 		outColor = vec4(pow(color, vec3(1.0 / gamma)), 1.0);
 	}
