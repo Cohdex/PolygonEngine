@@ -150,7 +150,7 @@ static const std::string simpleFragmentShader = R"(
 
 		//color = vec3((2 * 0.01) / (50.0 + 0.01 - gl_FragCoord.z * (50.0 - 0.01)));
 
-		out_color = vec4(pow(color, vec3(1.0 / gamma)), 1.0);
+		out_color = vec4(color, 1.0);//vec4(pow(color, vec3(1.0 / gamma)), 1.0);
 	}
 )";
 
@@ -185,6 +185,13 @@ static const std::string screenFragmentShader = R"(
 
 	uniform sampler2D tex;
 
+	const float gamma = 2.2;
+
+	float gray(vec3 color)
+	{
+		return dot(color, vec3(0.2126, 0.7152, 0.0722));
+	}
+
 	vec3 convolute(vec3 samples[3][3], float kernel[9])
 	{
 		vec3 result = vec3(0.0);
@@ -213,6 +220,25 @@ static const std::string screenFragmentShader = R"(
 		return samples;
 	}
 
+	float sobel(vec3 samples[3][3])
+	{
+		float xKernel[9] = { // X-kernel
+			-1, 0, 1,
+			-2, 0, 2,
+			-1, 0, 1
+		};
+		float yKernel[9] = { // Y-kernel
+			 1,  2,  1,
+			 0,  0,  0,
+			-1, -2, -1
+		};
+
+		float magX = gray(convolute(samples, xKernel));
+		float magY = gray(convolute(samples, yKernel));
+
+		return sqrt(magX*magX + magY*magY);
+	}
+
 	void main()
 	{
 		//vec3 color = texture(tex, texCoord).rgb;
@@ -228,7 +254,7 @@ static const std::string screenFragmentShader = R"(
 		//	2.0/16, 4.0/16, 2.0/16,
 		//	1.0/16, 2.0/16, 1.0/16
 		//};
-		//float kernel[9] = { // Edge detection
+		//float kernel[9] = { // Edge
 		//	1, 1, 1,
 		//	1, -8, 1,
 		//	1, 1, 1
@@ -248,9 +274,10 @@ static const std::string screenFragmentShader = R"(
 		//	0, 0, 0,
 		//	-1, -2, -1
 		//};
-		vec3 color = convolute(getSamples(), kernel);
-		//color = vec3(dot(color, vec3(0.2126, 0.7152, 0.0722)));
-		outColor = vec4(color, 1.0);
+		vec3 color;// = convolute(getSamples(), kernel);
+		color = vec3(sobel(samples));
+		//color = vec3(gray(color));
+		outColor = vec4(pow(color, vec3(1.0 / gamma)), 1.0);
 	}
 )";
 
