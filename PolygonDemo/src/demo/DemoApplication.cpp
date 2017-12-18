@@ -126,15 +126,16 @@ static const std::string simpleFragmentShader = R"(
 		vec2 texCoord = fs_in.texCoord + (texture(normalMap, fs_in.texCoord + t * 0.1).rg * 2.0 - 1.0) * 0.01;
 
 		vec3 normal;
-		#if 0
+		#if 1
 			normal = normalize(fs_in.normal);
 		#else
-			normal = mix(getNormal(texCoord), normalize(fs_in.normal), smoothstep(0.0, 1.0, sin(t) * 0.5 + 0.5));
+			//normal = mix(getNormal(texCoord), normalize(fs_in.normal), smoothstep(0.0, 1.0, sin(t) * 0.5 + 0.5));
+			normal = getNormal(texCoord);
 		#endif
 		normal = mix(normal, -normal, step(1, int(!gl_FrontFacing)));
 
 		vec3 texSample = pow(texture(tex, texCoord).rgb, vec3(gamma));
-		vec3 albedo = texSample * materialColor;
+		vec3 albedo = /*texSample */ materialColor;
 
 		vec3 ambient = albedo * lightColor * 0.04;
 
@@ -147,6 +148,8 @@ static const std::string simpleFragmentShader = R"(
 
 		vec3 edgeColor = vec3(pow(1.0 - max(0.0, dot(normalize(viewPosition - fs_in.position), normal)), 16)) * materialColor;// * vec3(0.7, 0.0, 0.0);
 		//color += edgeColor;
+
+		//color = diffuse;
 
 		//color = vec3((2 * 0.01) / (50.0 + 0.01 - gl_FragCoord.z * (50.0 - 0.01)));
 
@@ -275,7 +278,7 @@ static const std::string screenFragmentShader = R"(
 		//	-1, -2, -1
 		//};
 		vec3 color;// = convolute(getSamples(), kernel);
-		color = samples[1][1] * sqrt(sobel(samples));
+		color = samples[1][1] * sqrt(1.0 - sobel(samples));
 		//color = vec3(gray(color));
 		outColor = vec4(pow(color, vec3(1.0 / gamma)), 1.0);
 	}
@@ -288,7 +291,7 @@ namespace demo
 	std::unique_ptr<plgn::Shader> screenShader;
 	std::unique_ptr<plgn::VertexArray> screenVao;
 
-	DemoApplication::DemoApplication() : Application("Polygon Engine Demo Application", 1280, 720, false)
+	DemoApplication::DemoApplication() : Application("Polygon Engine Demo Application", 1280, 720, true)
 	{
 	}
 
