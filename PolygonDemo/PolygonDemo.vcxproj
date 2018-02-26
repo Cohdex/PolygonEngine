@@ -150,12 +150,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\demo\DemoApplication.h" />
+    <ClInclude Include="include\demo\RayTracerDemo.h" />
     <ClInclude Include="include\demo\SDFDemo.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\demo\DemoApplication.cpp" />
     <ClCompile Include="src\demo\main.cpp" />
+    <ClCompile Include="src\demo\RayTracerDemo.cpp" />
     <ClCompile Include="src\demo\SDFDemo.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

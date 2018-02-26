@@ -24,6 +24,9 @@
     <ClInclude Include="include\demo\SDFDemo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\demo\RayTracerDemo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -36,6 +39,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\demo\SDFDemo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\demo\RayTracerDemo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
